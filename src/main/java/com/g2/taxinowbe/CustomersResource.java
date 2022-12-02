@@ -36,9 +36,8 @@ public class CustomersResource {
     @Path("/")
     @Produces("text/plain")
     public String getCustomers() throws ExecutionException, InterruptedException, IOException {
-        Firestore dbFirestore = FirestoreClient.getFirestore();
-        DocumentReference docRef = dbFirestore.collection("customers").document("rf5E0zXjxYaiHgO44QZn");
-
+        DocumentReference docRef = FirestoreClient.getFirestore()
+                .collection("customers").document("rf5E0zXjxYaiHgO44QZn");
         // asynchronously retrieve the document
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
