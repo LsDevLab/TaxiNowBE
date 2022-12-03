@@ -21,4 +21,5 @@ public class TaxiNowService extends Application {
                 .build();
         FirebaseApp.initializeApp(options);
     }
+
 }

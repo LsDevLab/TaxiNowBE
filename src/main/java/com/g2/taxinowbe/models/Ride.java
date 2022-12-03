@@ -124,4 +124,5 @@ public class Ride {
                 ", acceptationPrice=" + acceptationPrice +
                 '}';
     }
+
 }
