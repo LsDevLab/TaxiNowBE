@@ -2,6 +2,7 @@
 
 * add serviceAccount.json in glassfish6/glassfish/domains/domains1/config
 * add cacerts.jks in glassfish6/glassfish/domains/domains1/config
+* add apiSecret.txt in glassfish6/glassfish/domains/domains1/config
 * make sure that domain1 jvm options are the following
   (http://localhost:4848 -> configurations/server-config/jvm/options)
 

@@ -39,3 +39,4 @@ build/
 
 serviceAccountKey.json
 cacerts.jks
+apiSecret.txt
