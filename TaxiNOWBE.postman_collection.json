@@ -1,0 +1,101 @@
+{
+	"info": {
+		"_postman_id": "1effa2a7-b219-4e25-a66a-d73ed13cae2d",
+		"name": "TaxiNOWBE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12082297"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "login",
+							"value": "username",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/customers/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"TaxiNowBE-1.0-SNAPSHOT",
+						"taxinow-api",
+						"customers",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "alive",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/customers/alive",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"TaxiNowBE-1.0-SNAPSHOT",
+						"taxinow-api",
+						"customers",
+						"alive"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "secure",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlzcyI6IlRheGlOT1ciLCJpYXQiOjE2NzAxNjY3NjgsImV4cCI6MTY3MDE4ODM2OCwidXNlclR5cGUiOiJjdXN0b21lciIsInVzZXJJRCI6InNkZnNkMzU0NTQzMnNkZiJ9.-kDmOUx3dZ3Kbos6jpkcQ05X9esuJMkZCXryBm3hJtEzsdWWKryvzgs_4kYsXZx89TNAgauti-EPMIX2nDVN0Q",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/customers/login_check",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"TaxiNowBE-1.0-SNAPSHOT",
+						"taxinow-api",
+						"customers",
+						"login_check"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
