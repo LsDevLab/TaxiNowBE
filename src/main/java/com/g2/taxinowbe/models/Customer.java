@@ -22,7 +22,7 @@ public class Customer {
      */
     private String email;
     /**
-     * Phone number of the cutomer
+     * Phone number of the customer
      */
     private String phoneNumber;
 
@@ -85,6 +85,6 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer " + customerID + ": " + name + " " + surname + ", " + email + ", " + surname;
+        return "Customer " + customerID + ": " + name + " " + surname + ", " + email + ", " + phoneNumber;
     }
 }
