@@ -1,11 +1,13 @@
 package com.g2.taxinowbe.models;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDateTime;
 
 
 /**
  * Class representing a taxi ride.
  */
+@XmlRootElement(name = "ride")
 public class Ride {
 
     /**

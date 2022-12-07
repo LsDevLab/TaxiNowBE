@@ -4,11 +4,9 @@ import com.g2.taxinowbe.models.Driver;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -39,7 +37,19 @@ public class DriverResource {
             }
         }
 
-
+        @PUT
+        @Path("/")
+        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+        public Response editDriver(Driver driver) throws ExecutionException, InterruptedException {
+            String id = driver.getDriverID();
+            DocumentReference docRef = FirestoreClient.getFirestore()
+                    .collection("drivers").document(id);
+            // asynchronously retrieve the document
+            ApiFuture<WriteResult> future = docRef.set(driver);
+            // block on response
+            WriteResult document = future.get();
+            return Response.ok().entity(driver).build();
+        }
 
 
     }

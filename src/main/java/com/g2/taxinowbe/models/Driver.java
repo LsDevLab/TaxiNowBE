@@ -1,9 +1,12 @@
 package com.g2.taxinowbe.models;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Class representing a taxi driver.
  */
-
+@XmlRootElement(name = "driver")
 public class Driver {
     /**
      * Name of the taxi driver
@@ -66,7 +69,7 @@ public class Driver {
     public String getName() {
         return name;
     }
-
+    @XmlElement
     public void setName(String name) {
         this.name = name;
     }
@@ -74,7 +77,7 @@ public class Driver {
     public String getSurname() {
         return surname;
     }
-
+    @XmlElement
     public void setSurname(String surname) {
         this.surname = surname;
     }
@@ -82,7 +85,7 @@ public class Driver {
     public String getEmail() {
         return email;
     }
-
+    @XmlElement
     public void setEmail(String email) {
         this.email = email;
     }
@@ -90,7 +93,7 @@ public class Driver {
     public  String getDriverID() {
         return driverID;
     }
-
+    @XmlElement
     public void setDriverID(String driverID) {
         this.driverID = driverID;
     }
@@ -98,7 +101,7 @@ public class Driver {
     public String getCarModel() {
         return carModel;
     }
-
+    @XmlElement
     public void setCarModel(String carModel) {
         this.carModel = carModel;
     }
@@ -106,7 +109,7 @@ public class Driver {
     public String getCarPlate() {
         return carPlate;
     }
-
+    @XmlElement
     public void setCarPlate(String carPlate) {
         this.carPlate = carPlate;
     }
@@ -114,7 +117,7 @@ public class Driver {
     public int getNumOfSeats() {
         return numOfSeats;
     }
-
+    @XmlElement
     public void setNumOfSeats(int numOfSeats) {
         this.numOfSeats = numOfSeats;
     }

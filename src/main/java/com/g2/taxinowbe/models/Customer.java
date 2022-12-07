@@ -1,8 +1,11 @@
 package com.g2.taxinowbe.models;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Class representing a taxi customer.
  */
+@XmlRootElement(name = "customer")
 public class Customer {
 
     /**
