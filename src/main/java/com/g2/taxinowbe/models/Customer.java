@@ -10,6 +10,10 @@ public class Customer {
      */
     private String customerID;
     /**
+     * The username of the customer
+     */
+    private String username;
+    /**
      * Name of the customer
      */
     private String name;
@@ -27,6 +31,12 @@ public class Customer {
     private String phoneNumber;
 
     /**
+     * Creates an empty Customer object
+     */
+    public Customer() {
+    }
+
+    /**
      * Creates a new Customer object
      *
      * @param customerID ID of the customer
@@ -35,8 +45,9 @@ public class Customer {
      * @param email e-mail of the customer
      * @param phoneNumber phone number of the customer
      */
-    public Customer(String customerID, String name, String surname, String email, String phoneNumber) {
+    public Customer(String customerID, String username, String name, String surname, String email, String phoneNumber) {
         this.customerID = customerID;
+        this.username = username;
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -49,6 +60,14 @@ public class Customer {
 
     public void setCustomerID(String customerID) {
         this.customerID = customerID;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {

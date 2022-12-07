@@ -11,7 +11,7 @@ public class Ride {
     /**
      * ID of the customer who creates the ride request
      */
-    private final String customerID;
+    private String customerID;
     /**
      * The state of the ride (pending, accepted, completed)
      */
@@ -23,15 +23,15 @@ public class Ride {
     /**
      * The number of passengers of the ride
      */
-    private final int numOfPassengers;
+    private int numOfPassengers;
     /**
      * The date of creation of the ride
      */
-    private final LocalDateTime createdOn;
+    private LocalDateTime createdOn;
     /**
      * The max price the customer can pay in euros for the ride
      */
-    private final Float maxAllowedPrice;
+    private Float maxAllowedPrice;
     /**
      * The price esthablished by the driver when he accepts
      */
@@ -51,6 +51,12 @@ public class Ride {
         this.createdOn = createdOn;
         this.maxAllowedPrice = maxAllowedPrice;
         this.state = RideState.PENDING;
+    }
+
+    /**
+     * Creates an empty Ride object
+     */
+    public Ride() {
     }
 
     /**
