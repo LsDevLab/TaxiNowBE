@@ -1,11 +1,18 @@
 package com.g2.taxinowbe;
 
+import com.g2.taxinowbe.models.Driver;
+import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.cloud.FirestoreClient;
 import io.jsonwebtoken.SignatureAlgorithm;
-import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
@@ -13,6 +20,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Key;
 import java.util.Base64;
+import java.util.concurrent.ExecutionException;
+
+import static jakarta.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
 
 @ApplicationPath("/taxinow-api")
 public class TaxiNowService extends Application {
@@ -33,4 +43,27 @@ public class TaxiNowService extends Application {
         API_KEY = new SecretKeySpec(Base64.getDecoder().decode(keyString), SIGNATURE_ALGORITHM.getJcaName());
     }
 
-}
+
+    }
+
+   /* @GET
+    @Path("/drivers/{ID}")
+    @Produces("text/plain")
+    public Driver getDriver(@PathParam("ID") String id){
+        try {
+            return Driver.getDriverID(id);
+        } catch (Exception e) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+    }
+
+    @PUT
+    @Path("/driver/{ID}")
+    @Produces(APPLICATION_FORM_URLENCODED)
+    public Driver editDriver(@PathParam("ID") String id){}
+       try {
+            return Driver.editDriver(driverBody);
+        } catch (Exception e) {
+            return Driver.addDriver(driver);
+        }
+    }*/

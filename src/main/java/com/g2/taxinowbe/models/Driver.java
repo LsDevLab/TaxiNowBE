@@ -60,6 +60,9 @@ public class Driver {
         this.numOfSeats = numOfSeats;
     }
 
+    public Driver() {
+    }
+
     public String getName() {
         return name;
     }
@@ -84,7 +87,7 @@ public class Driver {
         this.email = email;
     }
 
-    public String getDriverID() {
+    public  String getDriverID() {
         return driverID;
     }
 
