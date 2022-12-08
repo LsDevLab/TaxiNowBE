@@ -8,6 +8,45 @@
 	"item": [
 		{
 			"name": "login",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZTQiLCJpc3MiOiJUYXhpTk9XIiwiaWF0IjoxNjcwNDkzMzU1LCJleHAiOjE2NzA1MTQ5NTUsInVzZXJUeXBlIjoiY3VzdG9tZXIiLCJ1c2VySUQiOiIyMUpmeDNQcUhQQWdTcldWZWFyZiJ9.HlNfC30EhVuDU5PPnTWDa0lcdaPzEcp0g0_JH9Jfq7-AIv8mVQPi3ngPoXcoUk46aKIrcpmmzkIMiUYcOdoFGA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/access/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"TaxiNowBE-1.0-SNAPSHOT",
+						"taxinow-api",
+						"access",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -15,8 +54,8 @@
 					"mode": "urlencoded",
 					"urlencoded": [
 						{
-							"key": "login",
-							"value": "username",
+							"key": "username",
+							"value": "username3",
 							"type": "text"
 						},
 						{
@@ -27,7 +66,7 @@
 					]
 				},
 				"url": {
-					"raw": "http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/customers/login",
+					"raw": "http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/access/login",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -36,8 +75,60 @@
 					"path": [
 						"TaxiNowBE-1.0-SNAPSHOT",
 						"taxinow-api",
-						"customers",
+						"access",
 						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "username4",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password1",
+							"type": "text"
+						},
+						{
+							"key": "userType",
+							"value": "customer",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "pippo",
+							"type": "text"
+						},
+						{
+							"key": "surname",
+							"value": "rossi",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/access/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"TaxiNowBE-1.0-SNAPSHOT",
+						"taxinow-api",
+						"access",
+						"register"
 					]
 				}
 			},
@@ -49,7 +140,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/customers/alive",
+					"raw": "http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/access/alive",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -58,40 +149,8 @@
 					"path": [
 						"TaxiNowBE-1.0-SNAPSHOT",
 						"taxinow-api",
-						"customers",
+						"access",
 						"alive"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "secure",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VybmFtZSIsImlzcyI6IlRheGlOT1ciLCJpYXQiOjE2NzAxNjY3NjgsImV4cCI6MTY3MDE4ODM2OCwidXNlclR5cGUiOiJjdXN0b21lciIsInVzZXJJRCI6InNkZnNkMzU0NTQzMnNkZiJ9.-kDmOUx3dZ3Kbos6jpkcQ05X9esuJMkZCXryBm3hJtEzsdWWKryvzgs_4kYsXZx89TNAgauti-EPMIX2nDVN0Q",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/customers/login_check",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"TaxiNowBE-1.0-SNAPSHOT",
-						"taxinow-api",
-						"customers",
-						"login_check"
 					]
 				}
 			},

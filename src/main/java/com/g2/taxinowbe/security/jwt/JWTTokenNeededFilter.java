@@ -38,7 +38,7 @@ public class JWTTokenNeededFilter implements ContainerRequestFilter {
         try {
             // Validate the token
             Jws<Claims> claims = Jwts.parser().setSigningKey(TaxiNowService.API_KEY).parseClaimsJws(token);
-            if(!claims.getBody().containsKey("username") || !claims.getBody().containsKey("userID") || !claims.getBody().containsKey("userType")){
+            if(!claims.getBody().containsKey("userID") || !claims.getBody().containsKey("userType")){
                 throw new Exception();
             }
             requestContext.setProperty("username", claims.getBody().getSubject());

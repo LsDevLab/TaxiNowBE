@@ -26,29 +26,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
 @Path("/customers")
 public class CustomersResource {
 
-    @GET
-    @Path("/alive")
-    @Produces("text/plain")
-    public String alive() {
-        return "TaxiNOW BE is alive!";
-    }
-
-    @POST
-    @Path("/login")
-    @Consumes(APPLICATION_FORM_URLENCODED)
-    public Response authenticateUser(@FormParam("username") String username,
-                                     @FormParam("password") String password) {
-        try {
-
-            // Authenticate and issue a token for the user
-            String token = authenticate(username, password);
-            // Return the token on the response
-            return Response.ok().header(AUTHORIZATION, "Bearer " + token).build();
-
-        } catch (Exception e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-    }
 
     @GET
     @Path("/")
@@ -70,38 +47,7 @@ public class CustomersResource {
 
     }
 
-    @GET
-    @JWTTokenNeeded
-    @Path("/login_check")
-    @Produces("text/plain")
-    public String secure(@Context ContainerRequestContext context) throws ExecutionException, InterruptedException, IOException {
-        return "Hi " + context.getProperty("username") + ". You are logged as " + context.getProperty("userType") +
-                " and your ID is " + context.getProperty("userID") + ".";
-    }
 
-    /**
-     * Authenticate user and issue a JWT token
-     *
-     * @param username username of the user
-     * @param password password of the user
-     * @return
-     */
-    private String authenticate(String username, String password)  {
-        // TODO: check if user exists in Firebase, his password and retrieve user type (customer or driver)
-        String userID = "sdfsd3545432sdf";
-        String userType = "customer";
-        // Build the JWT token
-        String jwtToken = Jwts.builder()
-                .setSubject(username)
-                .setIssuer("TaxiNOW")
-                .setIssuedAt(new Date())
-                .setExpiration(Date.from(Instant.now().plus(360l, ChronoUnit.MINUTES)))
-                .claim("userType", userType)
-                .claim("userID", userID)
-                .signWith(TaxiNowService.SIGNATURE_ALGORITHM, TaxiNowService.API_KEY)
-                .compact();
-        return jwtToken;
-    }
 
     /**
      * Get the information about the user with the specified ID

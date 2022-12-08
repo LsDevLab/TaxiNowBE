@@ -42,6 +42,22 @@ public class Driver {
      * Number of the car's seats
      */
     private int numOfSeats;    /**
+
+     /**
+     * username of the user
+     */
+    private String username;
+
+    public Driver() {
+    }
+
+    public Driver(String username, String name, String surname) {
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
+    }
+
+    /**
      * Creates a new Customer object
      *
      * @param driverID ID of the driver
@@ -52,8 +68,7 @@ public class Driver {
      * @param carPlate string of the car's plate
      * @param numOfSeats number of the car's seats
      */
-
-    public Driver(String name, String surname, String email, String hashedPassword, String driverID,String carModel, String carPlate, int numOfSeats) {
+    public Driver(String name, String surname, String email, String driverID,String carModel, String carPlate, int numOfSeats) {
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -61,9 +76,6 @@ public class Driver {
         this.carModel = carModel;
         this.carPlate = carPlate;
         this.numOfSeats = numOfSeats;
-    }
-
-    public Driver() {
     }
 
     public String getName() {

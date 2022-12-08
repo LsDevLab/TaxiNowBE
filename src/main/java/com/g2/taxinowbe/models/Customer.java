@@ -39,6 +39,12 @@ public class Customer {
     public Customer() {
     }
 
+    public Customer(String username, String name, String surname) {
+        this.username = username;
+        this.name = name;
+        this.surname = surname;
+    }
+
     /**
      * Creates a new Customer object
      *
