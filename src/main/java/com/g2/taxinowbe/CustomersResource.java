@@ -48,7 +48,6 @@ public class CustomersResource {
     }
 
 
-
     /**
      * Get the information about the user with the specified ID
      *
@@ -68,7 +67,6 @@ public class CustomersResource {
         if (document.exists()) {
             // convert document to POJO
             Customer customer = document.toObject(Customer.class);
-
             if (context.getProperty("username").equals(customer.getUsername())){
                 return Response.ok().entity(customer).build();
             }else{

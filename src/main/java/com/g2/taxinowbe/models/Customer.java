@@ -1,6 +1,6 @@
 package com.g2.taxinowbe.models;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Class representing a taxi customer.

@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 @Path("/rides")
@@ -56,9 +57,8 @@ public class RidesResource {
         return result;
     }
 
-
     /**
-     * Get the information about the user with the specified ID
+     * Get the information about the ride with the specified ID
      *
      * @param ID ID of the ride
      * @return The information about the searched ride
@@ -129,7 +129,6 @@ public class RidesResource {
 
         return response;
     }
-
 
     /**
      * Set the status of a ride with a specified ID to PENDING
@@ -205,6 +204,30 @@ public class RidesResource {
         }
 
         return response;
+    }
+
+    /**
+     * Add a new ride request from the current customer
+     *
+     * @param ride the ride object
+     * @return the created ride ID
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    @POST
+    @JWTTokenNeeded
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_XML)
+    public Response addRideRequest(@Context ContainerRequestContext context, Ride ride) throws ExecutionException, InterruptedException {
+        String userID = (String) context.getProperty("userID");
+        String userType = (String) context.getProperty("userType");
+        if(userType.equals("customer") && ride.getCustomerID().equals(userID)) {
+            ApiFuture<DocumentReference> future = FirestoreClient.getFirestore().collection("rides").add(ride);
+            String rideID = future.get().get().get().getId();
+            return Response.status(Response.Status.CREATED).entity(rideID).build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
     }
 
 }
