@@ -4,9 +4,7 @@ import com.g2.taxinowbe.models.Ride;
 import com.g2.taxinowbe.models.RideState;
 import com.g2.taxinowbe.security.jwt.JWTTokenNeeded;
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -19,13 +17,44 @@ import java.util.concurrent.ExecutionException;
 @Path("/rides")
 public class RidesResource {
 
-//    @GET
-//    @Path("/")
-//    @Produces("text/plain")
-//    public String getRides() {
-//
-//
-//    }
+    @GET
+    @JWTTokenNeeded
+    @Path("/")
+    @Produces("text/plain")
+    public String getRides(@Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
+        CollectionReference collectionReference = FirestoreClient.getFirestore().collection("rides");
+
+        String userType = (String) context.getProperty("userType");
+        String userID = (String) context.getProperty("userID");
+
+        Query query = null;
+
+        if (userType.compareToIgnoreCase("customer")==0){
+            //CASE - I'm a customer
+            query = collectionReference.whereEqualTo("customerID", userID);
+
+        }else if(userType.compareToIgnoreCase("driver")==0){
+            //CASE - I'm a driver
+            query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
+        }else{
+            //CASE - I'm not authorized
+            return "You are UNAUTHORIZED";
+        }
+
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+
+        if (querySnapshot.get().getDocuments().isEmpty()){
+            return "No rides found";
+        }
+
+        String result="";
+
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            result+=document.getData().toString()+"\n";
+        }
+
+        return result;
+    }
 
 
     /**
