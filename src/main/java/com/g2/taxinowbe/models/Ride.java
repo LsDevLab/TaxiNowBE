@@ -1,5 +1,6 @@
 package com.g2.taxinowbe.models;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDateTime;
 
@@ -29,7 +30,7 @@ public class Ride {
     /**
      * The date of creation of the ride
      */
-    private LocalDateTime createdOn;
+    private long createdOn;
     /**
      * The max price the customer can pay in euros for the ride
      */
@@ -47,7 +48,7 @@ public class Ride {
      * @param createdOn the date of creation
      * @param maxAllowedPrice max price the customer can pay in euros for the ride
      */
-    public Ride(String customerID, int numOfPassengers, LocalDateTime createdOn, Float maxAllowedPrice) {
+    public Ride(String customerID, int numOfPassengers, long createdOn, Float maxAllowedPrice) {
         this.customerID = customerID;
         this.numOfPassengers = numOfPassengers;
         this.createdOn = createdOn;
@@ -105,7 +106,7 @@ public class Ride {
         return numOfPassengers;
     }
 
-    public LocalDateTime getCreatedOn() {
+    public long getCreatedOn() {
         return createdOn;
     }
 
@@ -118,6 +119,26 @@ public class Ride {
      */
     public boolean isAccepted(){
         return acceptedByDriverID != null;
+    }
+
+    @XmlElement
+    public void setCustomerID(String customerID) {
+        this.customerID = customerID;
+    }
+
+    @XmlElement
+    public void setNumOfPassengers(int numOfPassengers) {
+        this.numOfPassengers = numOfPassengers;
+    }
+
+    @XmlElement
+    public void setCreatedOn(long createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    @XmlElement
+    public void setMaxAllowedPrice(Float maxAllowedPrice) {
+        this.maxAllowedPrice = maxAllowedPrice;
     }
 
     @Override
