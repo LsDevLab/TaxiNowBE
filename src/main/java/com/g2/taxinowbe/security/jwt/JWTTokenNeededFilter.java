@@ -30,12 +30,14 @@ public class JWTTokenNeededFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
-        // Get the HTTP Authorization header from the request
-        String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        // Extract the token from the HTTP Authorization header
-        String token = authorizationHeader.substring("Bearer".length()).trim();
-
         try {
+
+            // Get the HTTP Authorization header from the request
+            String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+
+            // Extract the token from the HTTP Authorization header
+            String token = authorizationHeader.substring("Bearer".length()).trim();
+
             // Validate the token
             Jws<Claims> claims = Jwts.parser().setSigningKey(TaxiNowService.API_KEY).parseClaimsJws(token);
             if(!claims.getBody().containsKey("userID") || !claims.getBody().containsKey("userType")){
