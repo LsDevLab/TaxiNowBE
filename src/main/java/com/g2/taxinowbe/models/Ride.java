@@ -90,6 +90,10 @@ public class Ride {
         this.state = RideState.COMPLETED;
     }
 
+    public RideState getState() {
+        return state;
+    }
+
     public String getCustomerID() {
         return customerID;
     }
@@ -112,13 +116,6 @@ public class Ride {
 
     public Float getMaxAllowedPrice() {
         return maxAllowedPrice;
-    }
-
-    /**
-     * @return if the ride is accepted
-     */
-    public boolean isAccepted(){
-        return acceptedByDriverID != null;
     }
 
     @XmlElement
