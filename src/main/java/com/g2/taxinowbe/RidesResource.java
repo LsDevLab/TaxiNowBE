@@ -18,6 +18,14 @@ import java.util.concurrent.ExecutionException;
 @Path("/rides")
 public class RidesResource {
 
+
+    /**
+     * Get the information about rides linked to the user making the request.
+     * If I'm a customer I'll get every pending, accepted or completed ride
+     * I posted on the app. Otherwise, if I'm a driver I'll get all my accepted or completed rides.
+     *
+     * @return The information about all the rides linked to the asking customer.
+     */
     @GET
     @JWTTokenNeeded
     @Path("/")
@@ -45,7 +53,196 @@ public class RidesResource {
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
 
         if (querySnapshot.get().getDocuments().isEmpty()){
-            return "No rides found";
+            return "No rides found for this user";
+        }
+
+        String result="";
+
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            result+=document.getData().toString()+"\n";
+        }
+
+        return result;
+    }
+
+    /**
+     * Get the information about pending rides linked to the customer making the request.
+     * Only customers can make this type of request.
+     *
+     * @return The information about all the pending rides linked to the asking customer.
+     */
+    @GET
+    @JWTTokenNeeded
+    @Path("/pending")
+    @Produces("text/plain")
+    public String getPendingRides(@Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
+        CollectionReference collectionReference = FirestoreClient.getFirestore().collection("rides");
+
+        String userType = (String) context.getProperty("userType");
+        String userID = (String) context.getProperty("userID");
+
+        Query query = null;
+
+        if (userType.compareToIgnoreCase("customer")==0){
+            //CASE - I'm a customer
+            query = collectionReference.whereEqualTo("customerID", userID);
+
+        }else{
+            //CASE - I'm not authorized
+            return "You are UNAUTHORIZED";
+        }
+
+        query = query.whereEqualTo("state", "PENDING");
+
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+
+        if (querySnapshot.get().getDocuments().isEmpty()){
+            return "No rides found with the specified criteria";
+        }
+
+        String result="";
+
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            result+=document.getData().toString()+"\n";
+        }
+
+        return result;
+    }
+
+    /**
+     * Get the information about completed rides linked to the user making the request.
+     *
+     * @return The information about all the completed rides linked to the asking user.
+     */
+    @GET
+    @JWTTokenNeeded
+    @Path("/completed")
+    @Produces("text/plain")
+    public String getCompletedRides(@Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
+        CollectionReference collectionReference = FirestoreClient.getFirestore().collection("rides");
+
+        String userType = (String) context.getProperty("userType");
+        String userID = (String) context.getProperty("userID");
+
+        Query query = null;
+
+        if (userType.compareToIgnoreCase("customer")==0){
+            //CASE - I'm a customer
+            query = collectionReference.whereEqualTo("customerID", userID);
+
+        }else if(userType.compareToIgnoreCase("driver")==0){
+            //CASE - I'm a driver
+            query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
+        }else{
+            //CASE - I'm not authorized
+            return "You are UNAUTHORIZED";
+        }
+
+        query = query.whereEqualTo("state", "COMPLETED");
+
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+
+        if (querySnapshot.get().getDocuments().isEmpty()){
+            return "No rides found with the specified criteria";
+        }
+
+        String result="";
+
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            result+=document.getData().toString()+"\n";
+        }
+
+        return result;
+    }
+
+    /**
+     * Get the information about last n rides linked to the user making the request.
+     *
+     * @param latest_n Numbers of top rides to return
+     * @return The information about last n rides linked to the asking user, ordered by creation date.
+     */
+    @GET
+    @JWTTokenNeeded
+    @Path("/latest")
+    @Produces("text/plain")
+    public String getLastRides(@QueryParam("N") String latest_n, @Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
+        CollectionReference collectionReference = FirestoreClient.getFirestore().collection("rides");
+
+        String userType = (String) context.getProperty("userType");
+        String userID = (String) context.getProperty("userID");
+
+        Query query = null;
+
+        if (userType.compareToIgnoreCase("customer")==0){
+            //CASE - I'm a customer
+            query = collectionReference.whereEqualTo("customerID", userID);
+
+        }else if(userType.compareToIgnoreCase("driver")==0){
+            //CASE - I'm a driver
+            query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
+        }else{
+            //CASE - I'm not authorized
+            return "You are UNAUTHORIZED";
+        }
+
+        int n = (int)Float.parseFloat(latest_n);
+        query = query.orderBy("createdOn", Query.Direction.DESCENDING).limit(n);
+
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+
+        if (querySnapshot.get().getDocuments().isEmpty()){
+            return "No rides found with the specified criteria";
+        }
+
+        String result="";
+
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            result+=document.getData().toString()+"\n";
+        }
+
+        return result;
+    }
+
+    /**
+     * Get the information about rides linked to the user making the request,
+     * with number of passengers greater than a specified one
+     *
+     * @param min_passengers Numbers of minimum passengers
+     * @return The information about rides linked to the asking user, with number of passengers
+     * greater than the specified one
+     */
+    @GET
+    @JWTTokenNeeded
+    @Path("/min-passengers")
+    @Produces("text/plain")
+    public String getMinPassengersRides(@QueryParam("MIN") String min_passengers, @Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
+        CollectionReference collectionReference = FirestoreClient.getFirestore().collection("rides");
+
+        String userType = (String) context.getProperty("userType");
+        String userID = (String) context.getProperty("userID");
+
+        Query query = null;
+
+        if (userType.compareToIgnoreCase("customer")==0){
+            //CASE - I'm a customer
+            query = collectionReference.whereEqualTo("customerID", userID);
+
+        }else if(userType.compareToIgnoreCase("driver")==0){
+            //CASE - I'm a driver
+            query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
+        }else{
+            //CASE - I'm not authorized
+            return "You are UNAUTHORIZED";
+        }
+
+        int n = (int)Float.parseFloat(min_passengers);
+        query = query.whereGreaterThan("numOfPassengers", n);
+        query = query.orderBy("numOfPassengers", Query.Direction.ASCENDING);
+
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+
+        if (querySnapshot.get().getDocuments().isEmpty()){
+            return "No rides found with the specified criteria";
         }
 
         String result="";
