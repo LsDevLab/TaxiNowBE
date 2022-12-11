@@ -1,5 +1,6 @@
 package com.g2.taxinowbe;
 
+import com.g2.taxinowbe.models.Customer;
 import com.g2.taxinowbe.models.Ride;
 import com.g2.taxinowbe.models.RideState;
 import com.g2.taxinowbe.security.jwt.JWTTokenNeeded;
@@ -12,7 +13,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.io.IOException;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
 
 @Path("/rides")
@@ -29,8 +30,8 @@ public class RidesResource {
     @GET
     @JWTTokenNeeded
     @Path("/")
-    @Produces("text/plain")
-    public String getRides(@Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getRides(@Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
         CollectionReference collectionReference = FirestoreClient.getFirestore().collection("rides");
 
         String userType = (String) context.getProperty("userType");
@@ -47,22 +48,22 @@ public class RidesResource {
             query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
         }else{
             //CASE - I'm not authorized
-            return "You are UNAUTHORIZED";
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
 
-        if (querySnapshot.get().getDocuments().isEmpty()){
-            return "No rides found for this user";
-        }
-
-        String result="";
+        LinkedList<Ride> foundedRides = new LinkedList<>();
 
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            result+=document.getData().toString()+"\n";
+            foundedRides.add(document.toObject(Ride.class));
         }
 
-        return result;
+        if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok().entity(foundedRides).build();
     }
 
     /**
@@ -74,8 +75,8 @@ public class RidesResource {
     @GET
     @JWTTokenNeeded
     @Path("/pending")
-    @Produces("text/plain")
-    public String getPendingRides(@Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getPendingRides(@Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
         CollectionReference collectionReference = FirestoreClient.getFirestore().collection("rides");
 
         String userType = (String) context.getProperty("userType");
@@ -89,24 +90,24 @@ public class RidesResource {
 
         }else{
             //CASE - I'm not authorized
-            return "You are UNAUTHORIZED";
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
         query = query.whereEqualTo("state", "PENDING");
 
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
 
-        if (querySnapshot.get().getDocuments().isEmpty()){
-            return "No rides found with the specified criteria";
-        }
-
-        String result="";
+        LinkedList<Ride> foundedRides = new LinkedList<>();
 
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            result+=document.getData().toString()+"\n";
+            foundedRides.add(document.toObject(Ride.class));
         }
 
-        return result;
+        if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok().entity(foundedRides).build();
     }
 
     /**
@@ -117,8 +118,8 @@ public class RidesResource {
     @GET
     @JWTTokenNeeded
     @Path("/completed")
-    @Produces("text/plain")
-    public String getCompletedRides(@Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getCompletedRides(@Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
         CollectionReference collectionReference = FirestoreClient.getFirestore().collection("rides");
 
         String userType = (String) context.getProperty("userType");
@@ -135,24 +136,24 @@ public class RidesResource {
             query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
         }else{
             //CASE - I'm not authorized
-            return "You are UNAUTHORIZED";
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
         query = query.whereEqualTo("state", "COMPLETED");
 
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
 
-        if (querySnapshot.get().getDocuments().isEmpty()){
-            return "No rides found with the specified criteria";
-        }
-
-        String result="";
+        LinkedList<Ride> foundedRides = new LinkedList<>();
 
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            result+=document.getData().toString()+"\n";
+            foundedRides.add(document.toObject(Ride.class));
         }
 
-        return result;
+        if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok().entity(foundedRides).build();
     }
 
     /**
@@ -164,8 +165,8 @@ public class RidesResource {
     @GET
     @JWTTokenNeeded
     @Path("/latest")
-    @Produces("text/plain")
-    public String getLastRides(@QueryParam("N") String latest_n, @Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getLastRides(@QueryParam("N") String latest_n, @Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
         CollectionReference collectionReference = FirestoreClient.getFirestore().collection("rides");
 
         String userType = (String) context.getProperty("userType");
@@ -182,7 +183,7 @@ public class RidesResource {
             query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
         }else{
             //CASE - I'm not authorized
-            return "You are UNAUTHORIZED";
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
         int n = (int)Float.parseFloat(latest_n);
@@ -190,17 +191,17 @@ public class RidesResource {
 
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
 
-        if (querySnapshot.get().getDocuments().isEmpty()){
-            return "No rides found with the specified criteria";
-        }
-
-        String result="";
+        LinkedList<Ride> foundedRides = new LinkedList<>();
 
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            result+=document.getData().toString()+"\n";
+            foundedRides.add(document.toObject(Ride.class));
         }
 
-        return result;
+        if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok().entity(foundedRides).build();
     }
 
     /**
@@ -214,8 +215,8 @@ public class RidesResource {
     @GET
     @JWTTokenNeeded
     @Path("/min-passengers")
-    @Produces("text/plain")
-    public String getMinPassengersRides(@QueryParam("MIN") String min_passengers, @Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getMinPassengersRides(@QueryParam("MIN") String min_passengers, @Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
         CollectionReference collectionReference = FirestoreClient.getFirestore().collection("rides");
 
         String userType = (String) context.getProperty("userType");
@@ -232,26 +233,26 @@ public class RidesResource {
             query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
         }else{
             //CASE - I'm not authorized
-            return "You are UNAUTHORIZED";
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
         int n = (int)Float.parseFloat(min_passengers);
-        query = query.whereGreaterThan("numOfPassengers", n);
+        query = query.whereGreaterThanOrEqualTo("numOfPassengers", n);
         query = query.orderBy("numOfPassengers", Query.Direction.ASCENDING);
 
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
 
-        if (querySnapshot.get().getDocuments().isEmpty()){
-            return "No rides found with the specified criteria";
-        }
-
-        String result="";
+        LinkedList<Ride> foundedRides = new LinkedList<>();
 
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            result+=document.getData().toString()+"\n";
+            foundedRides.add(document.toObject(Ride.class));
         }
 
-        return result;
+        if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok().entity(foundedRides).build();
     }
 
     /**
@@ -275,6 +276,7 @@ public class RidesResource {
             Ride ride = document.toObject(Ride.class);
             // return ride only if you are the customer of the driver
             String userID = (String) context.getProperty("userID");
+            assert ride != null;
             if (userID.equals(ride.getCustomerID()) || userID.equals(ride.getAcceptedByDriverID())) {
                 response = Response.ok().entity(ride).build();
             } else {
@@ -310,6 +312,7 @@ public class RidesResource {
             float acceptationPrice = Float.parseFloat(price);
             // return ride only if you are the customer of the driver
             if (userType.compareToIgnoreCase("driver") == 0) {
+                assert ride != null;
                 if (acceptationPrice <= ride.getMaxAllowedPrice()) {
                     ride.setAccepted(userID, Float.parseFloat(price));
                     ApiFuture<WriteResult> future_write = docRef.set(ride);
@@ -349,6 +352,7 @@ public class RidesResource {
             String userType = (String) context.getProperty("userType");
             String userID = (String) context.getProperty("userID");
             // return ride only if you are the customer of the driver
+            assert ride != null;
             if (userType.compareToIgnoreCase("driver") == 0 && userID.compareTo(ride.getAcceptedByDriverID()) == 0) {
                 if (ride.getState() != RideState.COMPLETED) {
                     ride.setPending();
@@ -389,6 +393,7 @@ public class RidesResource {
             String userType = (String) context.getProperty("userType");
             String userID = (String) context.getProperty("userID");
             // return ride only if you are the customer of the driver
+            assert ride != null;
             if (userType.compareToIgnoreCase("driver") == 0 && userID.compareTo(ride.getAcceptedByDriverID()) == 0) {
                 ride.setCompleted();
                 ApiFuture<WriteResult> future_write = docRef.set(ride);
