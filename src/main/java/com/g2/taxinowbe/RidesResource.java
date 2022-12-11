@@ -1,8 +1,8 @@
 package com.g2.taxinowbe;
 
-import com.g2.taxinowbe.models.Customer;
 import com.g2.taxinowbe.models.Ride;
 import com.g2.taxinowbe.models.RideState;
+import com.g2.taxinowbe.models.Rides;
 import com.g2.taxinowbe.security.jwt.JWTTokenNeeded;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
@@ -63,7 +63,7 @@ public class RidesResource {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.ok().entity(foundedRides).build();
+        return Response.ok().entity(new Rides(foundedRides)).build();
     }
 
     /**
@@ -107,7 +107,7 @@ public class RidesResource {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.ok().entity(foundedRides).build();
+        return Response.ok().entity(new Rides(foundedRides)).build();
     }
 
     /**
@@ -153,7 +153,7 @@ public class RidesResource {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.ok().entity(foundedRides).build();
+        return Response.ok().entity(new Rides(foundedRides)).build();
     }
 
     /**
@@ -201,7 +201,7 @@ public class RidesResource {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.ok().entity(foundedRides).build();
+        return Response.ok().entity(new Rides(foundedRides)).build();
     }
 
     /**
@@ -252,7 +252,7 @@ public class RidesResource {
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
-        return Response.ok().entity(foundedRides).build();
+        return Response.ok().entity(new Rides(foundedRides)).build();
     }
 
     /**
