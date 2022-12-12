@@ -29,15 +29,19 @@ public class Trial {
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException, NoSuchAlgorithmException {
 
-        Client client = ClientBuilder.newClient();
-        //WebTarget target = client.target("http://localhost:8080/REST-UserManagement/UserService/users");
-        WebTarget target = client.target("http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/rides");
-        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_XML);
-        //GET -> invocationBuilder.get()
+        byte[] lineBytes = new byte[] {123};
 
+        System.out.println(lineBytes);
 
-
-        invocationBuilder.post(Entity.xml(new Ride("ciao", 1, 232L, (float) 34.3)));
+//        Client client = ClientBuilder.newClient();
+//        //WebTarget target = client.target("http://localhost:8080/REST-UserManagement/UserService/users");
+//        WebTarget target = client.target("http://localhost:8080/TaxiNowBE-1.0-SNAPSHOT/taxinow-api/rides");
+//        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_XML);
+//        //GET -> invocationBuilder.get()
+//
+//
+//
+//        invocationBuilder.post(Entity.xml(new Ride("ciao", 1, 232L, (float) 34.3)));
 
         //
 //        String secret = "asdfSFS34wfsdfsdfSDSD32dfsddDDerQSNCK34SOWEK5354fdgdf4";

@@ -3,6 +3,7 @@ package com.g2.taxinowbe;
 import com.g2.taxinowbe.models.Ride;
 import com.g2.taxinowbe.models.RideState;
 import com.g2.taxinowbe.models.Rides;
+import com.g2.taxinowbe.notifier.Notifier;
 import com.g2.taxinowbe.security.jwt.JWTTokenNeeded;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
 
@@ -420,12 +422,13 @@ public class RidesResource {
     @JWTTokenNeeded
     @Path("/")
     @Consumes(MediaType.APPLICATION_XML)
-    public Response addRideRequest(@Context ContainerRequestContext context, Ride ride) throws ExecutionException, InterruptedException {
+    public Response addRideRequest(@Context ContainerRequestContext context, Ride ride) throws ExecutionException, InterruptedException, IOException {
         String userID = (String) context.getProperty("userID");
         String userType = (String) context.getProperty("userType");
         if (userType.equals("customer") && ride.getCustomerID().equals(userID)) {
             ApiFuture<DocumentReference> future = FirestoreClient.getFirestore().collection("rides").add(ride);
             String rideID = future.get().get().get().getId();
+            Notifier.notifyNewRide(ride.getNumOfPassengers());
             return Response.status(Response.Status.CREATED).entity(rideID).build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).build();

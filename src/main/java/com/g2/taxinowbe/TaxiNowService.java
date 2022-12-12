@@ -1,6 +1,7 @@
 package com.g2.taxinowbe;
 
 import com.g2.taxinowbe.models.Driver;
+import com.g2.taxinowbe.notifier.Notifier;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.DocumentReference;
@@ -41,6 +42,8 @@ public class TaxiNowService extends Application {
         String keyString = new BufferedReader(new FileReader("apiSecret.txt")).readLine();
         SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
         API_KEY = new SecretKeySpec(Base64.getDecoder().decode(keyString), SIGNATURE_ALGORITHM.getJcaName());
+        // notifier init
+        Notifier.initialize();
     }
 
 

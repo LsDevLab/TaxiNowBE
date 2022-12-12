@@ -15,7 +15,7 @@ public class UDPServerM {
     public static void main(String[] args) throws IOException, InterruptedException {
 
         MulticastSocket sock = new MulticastSocket();
-        InetAddress addr = InetAddress.getByName("230.0.0.0");
+        InetAddress addr = InetAddress.getByName("234.5.6.7");
 
         System.out.println(sock.getNetworkInterface().getName());
         while (true) {
