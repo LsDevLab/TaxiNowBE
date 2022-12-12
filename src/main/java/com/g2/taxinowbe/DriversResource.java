@@ -7,6 +7,8 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -37,18 +39,24 @@ public class DriversResource {
         }
     }
 
+
     @PUT
     @Path("/")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response editDriver(Driver driver) throws ExecutionException, InterruptedException {
+    public Response editDriver(@Context ContainerRequestContext context, Driver driver) throws ExecutionException, InterruptedException {
         String id = driver.getDriverID();
         DocumentReference docRef = FirestoreClient.getFirestore()
                 .collection("drivers").document(id);
-        // asynchronously retrieve the document
-        ApiFuture<WriteResult> future = docRef.set(driver);
-        // block on response
-        WriteResult document = future.get();
-        return Response.ok().entity(driver).build();
+        if (context.getProperty("userID").equals(driver.getDriverID())){
+            // asynchronously retrieve the document
+            ApiFuture<WriteResult> future = docRef.set(driver);
+            // block on response
+            WriteResult document = future.get();
+            return Response.ok().entity(driver).build();
+        }else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
     }
 
 

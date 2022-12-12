@@ -44,26 +44,4 @@ public class TaxiNowService extends Application {
     }
 
 
-    }
-
-   /* @GET
-    @Path("/drivers/{ID}")
-    @Produces("text/plain")
-    public Driver getDriver(@PathParam("ID") String id){
-        try {
-            return Driver.getDriverID(id);
-        } catch (Exception e) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-    }
-
-    @PUT
-    @Path("/driver/{ID}")
-    @Produces(APPLICATION_FORM_URLENCODED)
-    public Driver editDriver(@PathParam("ID") String id){}
-       try {
-            return Driver.editDriver(driverBody);
-        } catch (Exception e) {
-            return Driver.addDriver(driver);
-        }
-    }*/
+}

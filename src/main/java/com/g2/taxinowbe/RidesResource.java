@@ -423,7 +423,7 @@ public class RidesResource {
     public Response addRideRequest(@Context ContainerRequestContext context, Ride ride) throws ExecutionException, InterruptedException {
         String userID = (String) context.getProperty("userID");
         String userType = (String) context.getProperty("userType");
-        if(userType.equals("customer") && ride.getCustomerID().equals(userID)) {
+        if (userType.equals("customer") && ride.getCustomerID().equals(userID)) {
             ApiFuture<DocumentReference> future = FirestoreClient.getFirestore().collection("rides").add(ride);
             String rideID = future.get().get().get().getId();
             return Response.status(Response.Status.CREATED).entity(rideID).build();
@@ -432,4 +432,24 @@ public class RidesResource {
         }
     }
 
+    @PUT
+    @JWTTokenNeeded
+    @Path("/{ID}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response editRide(@Context ContainerRequestContext context, @PathParam("ID") String ID) throws ExecutionException, InterruptedException, NullPointerException {
+        DocumentReference docRef = FirestoreClient.getFirestore().collection("rides").document(ID);
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        // block on response
+        DocumentSnapshot document = future.get();
+        Response response = null;
+        if (document.exists()) {
+            // convert document to POJO
+            Ride ride = document.toObject(Ride.class);
+            ApiFuture<WriteResult> future_write = docRef.set(ride);
+            // block on response
+             return response = Response.ok().entity(ride).build();
+        } else {
+            return response = Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+    }
 }

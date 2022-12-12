@@ -41,7 +41,7 @@ public class Driver {
     /**
      * Number of the car's seats
      */
-    private int numOfSeats;    /**
+    private int numOfSeats;
 
      /**
      * username of the user

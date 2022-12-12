@@ -82,12 +82,12 @@ public class Trial {
 //                .count()
 //                .get();
 //        if (future.get().getCount() == 0) {
-//            System.out.println("custoimers not empty");
+//            System.out.println("customers not empty");
 //        } else {
 //            future = FirestoreClient.getFirestore().collection("drivers").whereEqualTo("username", "username1")
 //                    .count().get();
 //            if (future.get().getCount() == 0) {
-//                System.out.println("driverd not empty");
+//                System.out.println("driver not empty");
 //            }
 //        }
 
