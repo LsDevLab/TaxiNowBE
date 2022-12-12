@@ -39,7 +39,7 @@ public class RidesResource {
         String userType = (String) context.getProperty("userType");
         String userID = (String) context.getProperty("userID");
 
-        Query query = null;
+        Query query;
 
         if (userType.compareToIgnoreCase("customer")==0){
             //CASE - I'm a customer
@@ -84,12 +84,14 @@ public class RidesResource {
         String userType = (String) context.getProperty("userType");
         String userID = (String) context.getProperty("userID");
 
-        Query query = null;
+        Query query;
 
         if (userType.compareToIgnoreCase("customer")==0){
             //CASE - I'm a customer
             query = collectionReference.whereEqualTo("customerID", userID);
 
+        }else if(userType.compareToIgnoreCase("driver")==0){
+            query = collectionReference.orderBy("createdOn", Query.Direction.DESCENDING);
         }else{
             //CASE - I'm not authorized
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -127,7 +129,7 @@ public class RidesResource {
         String userType = (String) context.getProperty("userType");
         String userID = (String) context.getProperty("userID");
 
-        Query query = null;
+        Query query;
 
         if (userType.compareToIgnoreCase("customer")==0){
             //CASE - I'm a customer
@@ -174,7 +176,7 @@ public class RidesResource {
         String userType = (String) context.getProperty("userType");
         String userID = (String) context.getProperty("userID");
 
-        Query query = null;
+        Query query;
 
         if (userType.compareToIgnoreCase("customer")==0){
             //CASE - I'm a customer
@@ -224,7 +226,7 @@ public class RidesResource {
         String userType = (String) context.getProperty("userType");
         String userID = (String) context.getProperty("userID");
 
-        Query query = null;
+        Query query;
 
         if (userType.compareToIgnoreCase("customer")==0){
             //CASE - I'm a customer
@@ -272,7 +274,7 @@ public class RidesResource {
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
         DocumentSnapshot document = future.get();
-        Response response = null;
+        Response response;
         if (document.exists()) {
             // convert document to POJO
             Ride ride = document.toObject(Ride.class);
@@ -305,7 +307,7 @@ public class RidesResource {
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
         DocumentSnapshot document = future.get();
-        Response response = null;
+        Response response;
         if (document.exists()) {
             // convert document to POJO
             Ride ride = document.toObject(Ride.class);
@@ -347,7 +349,7 @@ public class RidesResource {
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
         DocumentSnapshot document = future.get();
-        Response response = null;
+        Response response;
         if (document.exists()) {
             // convert document to POJO
             Ride ride = document.toObject(Ride.class);
@@ -388,7 +390,7 @@ public class RidesResource {
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
         DocumentSnapshot document = future.get();
-        Response response = null;
+        Response response;
         if (document.exists()) {
             // convert document to POJO
             Ride ride = document.toObject(Ride.class);
@@ -450,9 +452,9 @@ public class RidesResource {
             Ride ride = document.toObject(Ride.class);
             ApiFuture<WriteResult> future_write = docRef.set(ride);
             // block on response
-             return response = Response.ok().entity(ride).build();
+             return Response.ok().entity(ride).build();
         } else {
-            return response = Response.status(Response.Status.UNAUTHORIZED).build();
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
 }
