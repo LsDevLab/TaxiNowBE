@@ -90,6 +90,8 @@ public class RidesResource {
             //CASE - I'm a customer
             query = collectionReference.whereEqualTo("customerID", userID);
 
+        }else if(userType.compareToIgnoreCase("driver")==0){
+            query = collectionReference.orderBy("createdOn", Query.Direction.DESCENDING);
         }else{
             //CASE - I'm not authorized
             return Response.status(Response.Status.UNAUTHORIZED).build();
