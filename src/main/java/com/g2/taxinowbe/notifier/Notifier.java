@@ -8,19 +8,19 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 public class Notifier {
-    private static int TRANSISSION_PORT = 7778;
-
+    private static int port;
+    private static InetAddress address;
     private static MulticastSocket sock;
-    private static InetAddress addr;
 
-    public static void initialize() throws IOException {
+    public static void initialize(String address, int port) throws IOException {
         sock = new MulticastSocket();
-        addr = InetAddress.getByName("234.5.6.7");
+        Notifier.port = port;
+        Notifier.address = InetAddress.getByName(address);
     }
 
     public static void notifyNewRide(int numOfPassengers) throws IOException {
         byte[] numOfPassengersBytes = new byte[] {(byte) numOfPassengers};
-        DatagramPacket packet = new DatagramPacket(numOfPassengersBytes, 1, addr, TRANSISSION_PORT);
+        DatagramPacket packet = new DatagramPacket(numOfPassengersBytes, 1, address, port);
         sock.send(packet);
     }
 

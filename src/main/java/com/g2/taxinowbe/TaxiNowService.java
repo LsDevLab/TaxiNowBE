@@ -31,6 +31,9 @@ public class TaxiNowService extends Application {
     public static Key API_KEY;
     public static SignatureAlgorithm SIGNATURE_ALGORITHM;
 
+    public static String MULTICAST_NOTIFIER_ADDRESS = "230.0.0.0";
+    public static int MULTICAST_NOTIFIER_PORT = 7778;
+
     public TaxiNowService() throws IOException {
         // Initialize Firebase Database
         FileInputStream serviceAccount = new FileInputStream("serviceAccountKey.json");
@@ -43,7 +46,7 @@ public class TaxiNowService extends Application {
         SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
         API_KEY = new SecretKeySpec(Base64.getDecoder().decode(keyString), SIGNATURE_ALGORITHM.getJcaName());
         // notifier init
-        Notifier.initialize();
+        Notifier.initialize(MULTICAST_NOTIFIER_ADDRESS, MULTICAST_NOTIFIER_PORT);
     }
 
 

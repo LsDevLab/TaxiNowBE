@@ -16,7 +16,7 @@ public class UDPClientM {
        while (ns.hasMoreElements())
            System.out.println(ns.nextElement().getName());
 
-        InetAddress mcastaddr = InetAddress.getByName("234.5.6.7");
+        InetAddress mcastaddr = InetAddress.getByName("230.0.0.0");
         InetSocketAddress group = new InetSocketAddress(mcastaddr, 6789);
         NetworkInterface netIf = NetworkInterface.getByName("0.0.0.0");
         MulticastSocket s = new MulticastSocket(7778);
@@ -28,7 +28,7 @@ public class UDPClientM {
             DatagramPacket recv = new DatagramPacket(buf, buf.length);
             s.receive(recv);
             // OK, I'm done talking - leave the group...
-            s.leaveGroup(group, netIf);
+           // s.leaveGroup(group, netIf);
 
             System.out.println("Ricevuti: " + recv.getLength() + " bytes");
         }
