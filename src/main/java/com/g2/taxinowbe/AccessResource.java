@@ -59,7 +59,7 @@ public class AccessResource {
             // Authenticate and issue a token for the user
             String token = authenticate(username, password);
             // Return the token on the response
-            return Response.ok().header(AUTHORIZATION, "Bearer " + token).build();
+            return Response.ok().header(AUTHORIZATION, "Bearer " + token).entity(token).build();
         } catch (Exception e) {
             //TODO: more meaningful error messages
             return Response.status(UNAUTHORIZED).build();
@@ -87,7 +87,7 @@ public class AccessResource {
                     .claim("userID", userID)
                     .signWith(TaxiNowService.SIGNATURE_ALGORITHM, TaxiNowService.API_KEY)
                     .compact();
-            return Response.ok().header(AUTHORIZATION, "Bearer " + jwtToken).build();
+            return Response.ok().header(AUTHORIZATION, "Bearer " + jwtToken).entity(jwtToken).build();
         } else {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }

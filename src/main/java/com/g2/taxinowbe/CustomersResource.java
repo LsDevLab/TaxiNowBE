@@ -27,27 +27,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
 public class CustomersResource {
 
 
-    @GET
-    @Path("/")
-    @Produces("text/plain")
-    public String getCustomers() throws ExecutionException, InterruptedException, IOException {
-        DocumentReference docRef = FirestoreClient.getFirestore()
-                .collection("customers").document("rf5E0zXjxYaiHgO44QZn");
-        // asynchronously retrieve the document
-        ApiFuture<DocumentSnapshot> future = docRef.get();
-        // block on response
-        DocumentSnapshot document = future.get();
-        if (document.exists()) {
-            // convert document to POJO
-            //Customer cust = document.toObject(Customer.class);
-            return document.getData().toString();
-        } else {
-            return "No such document!";
-        }
-
-    }
-
-
     /**
      * Get the information about the user with the specified ID
      *
