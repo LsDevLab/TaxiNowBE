@@ -134,6 +134,14 @@ public class Driver {
         this.numOfSeats = numOfSeats;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public String toString() {
         return "Driver " + driverID + ": " + name + " " + surname + ", " + email+ " ;Car"  + carModel + ": "+ carPlate + ", " + numOfSeats ;
