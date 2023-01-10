@@ -44,10 +44,10 @@ public class DriversResource {
     @Path("/")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response editDriver(@Context ContainerRequestContext context, Driver driver) throws ExecutionException, InterruptedException {
-        String id = driver.getDriverID();
+        String id = driver.getID();
         DocumentReference docRef = FirestoreClient.getFirestore()
                 .collection("drivers").document(id);
-        if (context.getProperty("userID").equals(driver.getDriverID())){
+        if (context.getProperty("userID").equals(driver.getID())){
             // asynchronously retrieve the document
             ApiFuture<WriteResult> future = docRef.set(driver);
             // block on response
