@@ -33,6 +33,7 @@ public class DriversResource {
             document.getData();
             // convert document to POJO
             Driver driver = document.toObject(Driver.class);
+            driver.setID(document.getId());
             return Response.ok().entity(driver).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();

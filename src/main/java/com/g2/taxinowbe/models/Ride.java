@@ -11,6 +11,10 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 public class Ride {
 
     /**
+     * ID of the ride
+     */
+    private String ID;
+    /**
      * ID of the customer who creates the ride request
      */
     private String customerID;
@@ -38,6 +42,14 @@ public class Ride {
      * The price esthablished by the driver when he accepts
      */
     private Float acceptationPrice;
+    /**
+     * The starting address
+     */
+    private String startingAddress;
+    /**
+     * The destination address
+     */
+    private String destinationAddress;
 
     /**
      * Creates a new Ride object, setting it as pending
@@ -117,6 +129,18 @@ public class Ride {
         return maxAllowedPrice;
     }
 
+    public String getID() {
+        return ID;
+    }
+
+    public String getStartingAddress() {
+        return startingAddress;
+    }
+
+    public String getDestinationAddress() {
+        return destinationAddress;
+    }
+
     @XmlElement
     public void setCustomerID(String customerID) {
         this.customerID = customerID;
@@ -137,16 +161,34 @@ public class Ride {
         this.maxAllowedPrice = maxAllowedPrice;
     }
 
+    @XmlElement
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    @XmlElement
+    public void setStartingAddress(String startingAddress) {
+        this.startingAddress = startingAddress;
+    }
+
+    @XmlElement
+    public void setDestinationAddress(String destinationAddress) {
+        this.destinationAddress = destinationAddress;
+    }
+
     @Override
     public String toString() {
         return "Ride{" +
-                "customerID='" + customerID + '\'' +
+                "ID='" + ID + '\'' +
+                ", customerID='" + customerID + '\'' +
                 ", state=" + state +
                 ", acceptedByDriverID='" + acceptedByDriverID + '\'' +
                 ", numOfPassengers=" + numOfPassengers +
                 ", createdOn=" + createdOn +
                 ", maxAllowedPrice=" + maxAllowedPrice +
                 ", acceptationPrice=" + acceptationPrice +
+                ", startingAddress='" + startingAddress + '\'' +
+                ", destinationAddress='" + destinationAddress + '\'' +
                 '}';
     }
 

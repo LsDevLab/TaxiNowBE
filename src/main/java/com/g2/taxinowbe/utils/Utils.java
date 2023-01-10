@@ -1,5 +1,12 @@
 package com.g2.taxinowbe.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Utils {
 
     public static String bytesToHex(byte[] hash) {
@@ -12,6 +19,16 @@ public class Utils {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    public static Map<String, Object> removeNullValues(Object obj) {
+        Gson gson = new GsonBuilder().create();
+        Map<String, Object> map = new Gson().fromJson(
+                gson.toJson(obj), new TypeToken<HashMap<String, Object>>() {
+                }.getType()
+        );
+
+        return map;
     }
 
 }

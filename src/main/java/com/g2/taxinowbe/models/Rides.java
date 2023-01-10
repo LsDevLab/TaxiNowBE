@@ -1,6 +1,9 @@
 package com.g2.taxinowbe.models;
 
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.util.List;
 
@@ -26,4 +29,14 @@ public class Rides {
         this.rides = rides;
     }
 
+    @Override
+    public String toString() {
+        String str = "Rides{" +
+                "rides=\n";
+        for (Ride ride: rides){
+            str +=  "\t" + ride + ", \n";
+        }
+        str += '}';
+        return str;
+    }
 }

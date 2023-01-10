@@ -5,6 +5,8 @@ import com.g2.taxinowbe.models.RideState;
 import com.g2.taxinowbe.models.Rides;
 import com.g2.taxinowbe.notifier.Notifier;
 import com.g2.taxinowbe.security.jwt.JWTTokenNeeded;
+import com.g2.taxinowbe.utils.Utils;
+import com.google.api.client.util.DateTime;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
@@ -15,9 +17,10 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
-
 @Path("/rides")
 public class RidesResource {
 
@@ -58,7 +61,9 @@ public class RidesResource {
         LinkedList<Ride> foundedRides = new LinkedList<>();
 
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            foundedRides.add(document.toObject(Ride.class));
+            Ride ride = document.toObject(Ride.class);
+            ride.setID(document.getId());
+            foundedRides.add(ride);
         }
 
         if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
@@ -104,7 +109,9 @@ public class RidesResource {
         LinkedList<Ride> foundedRides = new LinkedList<>();
 
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            foundedRides.add(document.toObject(Ride.class));
+            Ride ride = document.toObject(Ride.class);
+            ride.setID(document.getId());
+            foundedRides.add(ride);
         }
 
         if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
@@ -150,7 +157,9 @@ public class RidesResource {
         LinkedList<Ride> foundedRides = new LinkedList<>();
 
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            foundedRides.add(document.toObject(Ride.class));
+            Ride ride = document.toObject(Ride.class);
+            ride.setID(document.getId());
+            foundedRides.add(ride);
         }
 
         if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
@@ -198,7 +207,9 @@ public class RidesResource {
         LinkedList<Ride> foundedRides = new LinkedList<>();
 
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            foundedRides.add(document.toObject(Ride.class));
+            Ride ride = document.toObject(Ride.class);
+            ride.setID(document.getId());
+            foundedRides.add(ride);
         }
 
         if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
@@ -249,7 +260,9 @@ public class RidesResource {
         LinkedList<Ride> foundedRides = new LinkedList<>();
 
         for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
-            foundedRides.add(document.toObject(Ride.class));
+            Ride ride = document.toObject(Ride.class);
+            ride.setID(document.getId());
+            foundedRides.add(ride);
         }
 
         if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
@@ -278,6 +291,7 @@ public class RidesResource {
         if (document.exists()) {
             // convert document to POJO
             Ride ride = document.toObject(Ride.class);
+            ride.setID(document.getId());
             // return ride only if you are the customer of the driver
             String userID = (String) context.getProperty("userID");
             assert ride != null;
@@ -311,6 +325,7 @@ public class RidesResource {
         if (document.exists()) {
             // convert document to POJO
             Ride ride = document.toObject(Ride.class);
+            ride.setID(document.getId());
             String userType = (String) context.getProperty("userType");
             String userID = (String) context.getProperty("userID");
             float acceptationPrice = Float.parseFloat(price);
@@ -353,6 +368,7 @@ public class RidesResource {
         if (document.exists()) {
             // convert document to POJO
             Ride ride = document.toObject(Ride.class);
+            ride.setID(document.getId());
             String userType = (String) context.getProperty("userType");
             String userID = (String) context.getProperty("userID");
             // return ride only if you are the customer of the driver
@@ -394,6 +410,7 @@ public class RidesResource {
         if (document.exists()) {
             // convert document to POJO
             Ride ride = document.toObject(Ride.class);
+            ride.setID(document.getId());
             String userType = (String) context.getProperty("userType");
             String userID = (String) context.getProperty("userID");
             // return ride only if you are the customer of the driver
@@ -428,7 +445,11 @@ public class RidesResource {
         String userID = (String) context.getProperty("userID");
         String userType = (String) context.getProperty("userType");
         if (userType.equals("customer") && ride.getCustomerID().equals(userID)) {
-            ApiFuture<DocumentReference> future = FirestoreClient.getFirestore().collection("rides").add(ride);
+            if (ride.getDestinationAddress() == null || ride.getStartingAddress() == null || ride.getNumOfPassengers() == 0){
+                return Response.status(Response.Status.BAD_REQUEST).build();
+            }
+            ride.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()).getTime());
+            ApiFuture<DocumentReference> future = FirestoreClient.getFirestore().collection("rides").add(Utils.removeNullValues(ride));
             String rideID = future.get().get().get().getId();
             Notifier.notifyNewRide(ride.getNumOfPassengers());
             return Response.status(Response.Status.CREATED).entity(rideID).build();
@@ -437,12 +458,12 @@ public class RidesResource {
         }
     }
 
-    @PUT
+    /*@PUT
     @JWTTokenNeeded
-    @Path("/{ID}")
+    @Path("/")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response editRide(@Context ContainerRequestContext context, @PathParam("ID") String ID) throws ExecutionException, InterruptedException, NullPointerException {
-        DocumentReference docRef = FirestoreClient.getFirestore().collection("rides").document(ID);
+    public Response editRide(@Context ContainerRequestContext context, Ride ride) throws ExecutionException, InterruptedException, NullPointerException {
+        DocumentReference docRef = FirestoreClient.getFirestore().collection("rides").document(ride.getID());
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
         DocumentSnapshot document = future.get();
@@ -450,11 +471,14 @@ public class RidesResource {
         if (document.exists()) {
             // convert document to POJO
             Ride ride = document.toObject(Ride.class);
+            ride.setID(document.getId());
             ApiFuture<WriteResult> future_write = docRef.set(ride);
             // block on response
              return Response.ok().entity(ride).build();
+        } else if (ride.getDestinationAddress() == null || ride.getStartingAddress() == null || ride.getNumOfPassengers() == 0){
+            return Response.status(Response.Status.BAD_REQUEST).build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-    }
+    }*/
 }
