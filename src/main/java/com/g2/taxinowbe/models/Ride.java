@@ -176,6 +176,21 @@ public class Ride {
         this.destinationAddress = destinationAddress;
     }
 
+    @XmlElement
+    public void setState(RideState state) {
+        this.state = state;
+    }
+
+    @XmlElement
+    public void setAcceptedByDriverID(String acceptedByDriverID) {
+        this.acceptedByDriverID = acceptedByDriverID;
+    }
+
+    @XmlElement
+    public void setAcceptationPrice(Float acceptationPrice) {
+        this.acceptationPrice = acceptationPrice;
+    }
+
     @Override
     public String toString() {
         return "Ride{" +

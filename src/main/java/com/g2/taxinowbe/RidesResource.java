@@ -27,8 +27,8 @@ public class RidesResource {
 
     /**
      * Get the information about rides linked to the user making the request.
-     * If I'm a customer I'll get every pending, accepted or completed ride
-     * I posted on the app. Otherwise, if I'm a driver I'll get all my accepted or completed rides.
+     * If I'm a customer I'll get every pending, accepted or completed ride with his ID
+     * Otherwise, if I'm a driver I'll get all my accepted or completed rides and all pending.
      *
      * @return The information about all the rides linked to the asking customer.
      */
@@ -43,6 +43,7 @@ public class RidesResource {
         String userID = (String) context.getProperty("userID");
 
         Query query;
+        Query query2 = null;
 
         if (userType.compareToIgnoreCase("customer")==0){
             //CASE - I'm a customer
@@ -51,6 +52,7 @@ public class RidesResource {
         }else if(userType.compareToIgnoreCase("driver")==0){
             //CASE - I'm a driver
             query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
+            query2 = collectionReference.whereEqualTo("state", RideState.PENDING);
         }else{
             //CASE - I'm not authorized
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -66,7 +68,16 @@ public class RidesResource {
             foundedRides.add(ride);
         }
 
-        if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
+        if (query2 != null) {
+            ApiFuture<QuerySnapshot> querySnapshot2 = query2.get();
+            for (DocumentSnapshot document : querySnapshot2.get().getDocuments()) {
+                Ride ride = document.toObject(Ride.class);
+                ride.setID(document.getId());
+                foundedRides.add(ride);
+            }
+        }
+
+        if (foundedRides.isEmpty()){
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
@@ -74,10 +85,9 @@ public class RidesResource {
     }
 
     /**
-     * Get the information about pending rides linked to the customer making the request.
-     * Only customers can make this type of request.
+     * Get the information about pending rides linked to the user making the request.
      *
-     * @return The information about all the pending rides linked to the asking customer.
+     * @return The information about all the pending rides linked to the asking user.
      */
     @GET
     @JWTTokenNeeded
@@ -114,12 +124,61 @@ public class RidesResource {
             foundedRides.add(ride);
         }
 
-        if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
+        if (foundedRides.isEmpty()){
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
         return Response.ok().entity(new Rides(foundedRides)).build();
     }
+
+    /**
+     * Get the information about accepted rides linked to the user making the request.
+     *
+     * @return The information about all the pending rides linked to the asking user.
+     */
+    @GET
+    @JWTTokenNeeded
+    @Path("/active")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response getAcceptedRides(@Context ContainerRequestContext context) throws ExecutionException, InterruptedException {
+        CollectionReference collectionReference = FirestoreClient.getFirestore().collection("rides");
+
+        String userType = (String) context.getProperty("userType");
+        String userID = (String) context.getProperty("userID");
+
+        Query query;
+
+        if (userType.compareToIgnoreCase("customer")==0){
+            //CASE - I'm a customer
+            query = collectionReference.whereEqualTo("customerID", userID);
+
+        }else if(userType.compareToIgnoreCase("driver")==0){
+            query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
+            query = query.orderBy("createdOn", Query.Direction.DESCENDING);
+        }else{
+            //CASE - I'm not authorized
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        query = query.whereEqualTo("state", "ACCEPTED");
+
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+
+        LinkedList<Ride> foundedRides = new LinkedList<>();
+
+        for (DocumentSnapshot document : querySnapshot.get().getDocuments()) {
+            Ride ride = document.toObject(Ride.class);
+            ride.setID(document.getId());
+            foundedRides.add(ride);
+        }
+
+        if (foundedRides.isEmpty()){
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        return Response.ok().entity(new Rides(foundedRides)).build();
+    }
+
 
     /**
      * Get the information about completed rides linked to the user making the request.
@@ -162,7 +221,7 @@ public class RidesResource {
             foundedRides.add(ride);
         }
 
-        if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
+        if (foundedRides.isEmpty()){
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
@@ -186,6 +245,7 @@ public class RidesResource {
         String userID = (String) context.getProperty("userID");
 
         Query query;
+        Query query2 = null;
 
         if (userType.compareToIgnoreCase("customer")==0){
             //CASE - I'm a customer
@@ -194,6 +254,7 @@ public class RidesResource {
         }else if(userType.compareToIgnoreCase("driver")==0){
             //CASE - I'm a driver
             query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
+            query2 = collectionReference.whereEqualTo("state", RideState.PENDING);
         }else{
             //CASE - I'm not authorized
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -212,7 +273,16 @@ public class RidesResource {
             foundedRides.add(ride);
         }
 
-        if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
+        if (query2 != null) {
+            ApiFuture<QuerySnapshot> querySnapshot2 = query2.get();
+            for (DocumentSnapshot document : querySnapshot2.get().getDocuments()) {
+                Ride ride = document.toObject(Ride.class);
+                ride.setID(document.getId());
+                foundedRides.add(ride);
+            }
+        }
+
+        if (foundedRides.isEmpty()){
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
@@ -237,7 +307,7 @@ public class RidesResource {
         String userType = (String) context.getProperty("userType");
         String userID = (String) context.getProperty("userID");
 
-        Query query;
+        Query query, query2 = null;
 
         if (userType.compareToIgnoreCase("customer")==0){
             //CASE - I'm a customer
@@ -246,6 +316,7 @@ public class RidesResource {
         }else if(userType.compareToIgnoreCase("driver")==0){
             //CASE - I'm a driver
             query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
+            query2 = collectionReference.whereEqualTo("state", RideState.PENDING);
         }else{
             //CASE - I'm not authorized
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -265,7 +336,16 @@ public class RidesResource {
             foundedRides.add(ride);
         }
 
-        if (querySnapshot.get().getDocuments().isEmpty() || foundedRides.isEmpty()){
+        if (query2 != null) {
+            ApiFuture<QuerySnapshot> querySnapshot2 = query2.get();
+            for (DocumentSnapshot document : querySnapshot2.get().getDocuments()) {
+                Ride ride = document.toObject(Ride.class);
+                ride.setID(document.getId());
+                foundedRides.add(ride);
+            }
+        }
+
+        if (foundedRides.isEmpty()){
             return Response.status(Response.Status.NO_CONTENT).build();
         }
 
