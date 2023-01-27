@@ -1,10 +1,12 @@
 package com.g2.taxinowbe;
 
 import com.g2.taxinowbe.models.Customer;
+import com.g2.taxinowbe.models.Driver;
 import com.g2.taxinowbe.security.jwt.JWTTokenNeeded;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import io.jsonwebtoken.Jwts;
 import jakarta.ws.rs.*;
@@ -55,6 +57,25 @@ public class CustomersResource {
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+    }
+
+    @PUT
+    @Path("/")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response editDriver(@Context ContainerRequestContext context, Customer customer) throws ExecutionException, InterruptedException {
+        String id = customer.getID();
+        DocumentReference docRef = FirestoreClient.getFirestore()
+                .collection("drivers").document(id);
+        if (context.getProperty("userID").equals(customer.getID())){
+            // asynchronously retrieve the document
+            ApiFuture<WriteResult> future = docRef.set(customer);
+            // block on response
+            WriteResult document = future.get();
+            return Response.ok().entity(customer).build();
+        }else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
     }
 
 }
