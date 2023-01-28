@@ -54,10 +54,10 @@ public class AccessResource {
     @Path("/login")
     @Consumes(APPLICATION_FORM_URLENCODED)
     public Response authenticateUser(@FormParam("username") String username,
-                                     @FormParam("password") String password) {
+                                     @FormParam("hashedPassword") String hashedPassword) {
         try {
             // Authenticate and issue a token for the user
-            String token = authenticate(username, password);
+            String token = authenticate(username, hashedPassword);
             // Return the token on the response
             return Response.ok().header(AUTHORIZATION, "Bearer " + token).entity(token).build();
         } catch (Exception e) {
@@ -70,14 +70,14 @@ public class AccessResource {
     @Path("/register")
     @Consumes(APPLICATION_FORM_URLENCODED)
     public Response register(@FormParam("username") String username,
-                             @FormParam("password") String password,
+                             @FormParam("hashedPassword") String hashedPassword,
                              @FormParam("name") String name,
                              @FormParam("surname") String surname,
                              @FormParam("userType") String userType) throws ExecutionException, InterruptedException, NoSuchAlgorithmException {
         if (userExists(username)){
             return Response.status(Response.Status.CONFLICT).build();
         } else if(userType.equals("customer") || userType.equals("driver")){
-            String userID = createUser(userType+"s", username, password, name, surname);
+            String userID = createUser(userType+"s", username, hashedPassword, name, surname);
             String jwtToken = Jwts.builder()
                     .setSubject(username)
                     .setIssuer("TaxiNOW")
@@ -97,12 +97,12 @@ public class AccessResource {
      * Authenticate user and issue a JWT token
      *
      * @param username username of the user
-     * @param password password of the user
+     * @param hashedPassword hashed password of the user
      * @return the jwt token
      */
-    private String authenticate(String username, String password) throws ExecutionException, InterruptedException, UserNotExistsException, WrongPasswordException, NoSuchAlgorithmException {
+    private String authenticate(String username, String hashedPassword) throws ExecutionException, InterruptedException, UserNotExistsException, WrongPasswordException, NoSuchAlgorithmException {
         // TODO: add salt
-        String hashedPassword;
+        String hPassword;
         String userID;
         String userType;
         int numOfSeats = 0;
@@ -111,7 +111,7 @@ public class AccessResource {
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         if (!documents.isEmpty()) {
             DocumentSnapshot document = documents.get(0);
-            hashedPassword = (String) document.getData().get("hashedPassword");
+            hPassword = (String) document.getData().get("hashedPassword");
             userID = document.getId();
             userType = "customer";
         } else {
@@ -119,7 +119,7 @@ public class AccessResource {
             documents = future.get().getDocuments();
             if (!documents.isEmpty()) {
                 DocumentSnapshot document = documents.get(0);
-                hashedPassword = (String) document.getData().get("hashedPassword");
+                hPassword = (String) document.getData().get("hashedPassword");
                 userID = document.getId();
                 userType = "driver";
                 numOfSeats = ((Double)document.getData().get("numOfSeats")).intValue();
@@ -127,9 +127,7 @@ public class AccessResource {
                 throw new UserNotExistsException();
             }
         }
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] encodedHash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-        if (!hashedPassword.equals(Utils.bytesToHex(encodedHash))){
+        if (!hPassword.equals(hashedPassword)){
             throw new WrongPasswordException();
         }
         // Build the JWT token
@@ -175,7 +173,7 @@ public class AccessResource {
      *
      * @param userType type of the user ("customer" or "driver")
      * @param username username of the user
-     * @param password password of the user
+     * @param hashedPassword hashed password of the user
      * @param name name of the user
      * @param surname surname of the user
      * @return the ID of the created user
@@ -183,10 +181,7 @@ public class AccessResource {
      * @throws InterruptedException
      * @throws NoSuchAlgorithmException
      */
-    private String createUser(String userType, String username, String password, String name, String surname) throws ExecutionException, InterruptedException, NoSuchAlgorithmException {
-        // hashing the password
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        String hashedPassword = Utils.bytesToHex(digest.digest(password.getBytes(StandardCharsets.UTF_8)));
+    private String createUser(String userType, String username, String hashedPassword, String name, String surname) throws ExecutionException, InterruptedException {
         // creating a new user
         UserBody newUser = new UserBody(username, name, surname, hashedPassword);
         ApiFuture<DocumentReference> future = FirestoreClient.getFirestore().collection(userType).add(newUser);
