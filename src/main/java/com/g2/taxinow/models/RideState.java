@@ -1,4 +1,4 @@
-package com.g2.taxinowbe.models;
+package com.g2.taxinow.models;
 
 /**
  * Possible states for a ride

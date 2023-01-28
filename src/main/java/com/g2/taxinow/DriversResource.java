@@ -1,8 +1,8 @@
-package com.g2.taxinowbe;
+package com.g2.taxinow;
 
-import com.g2.taxinowbe.models.Driver;
-import com.g2.taxinowbe.security.jwt.JWTTokenNeeded;
-import com.g2.taxinowbe.utils.Utils;
+import com.g2.taxinow.models.Driver;
+import com.g2.taxinow.security.jwt.JWTTokenNeeded;
+import com.g2.taxinow.utils.Utils;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;

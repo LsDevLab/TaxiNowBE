@@ -1,12 +1,12 @@
-package com.g2.taxinowbe;
+package com.g2.taxinow;
 
-import com.g2.taxinowbe.models.Ride;
-import com.g2.taxinowbe.models.RideState;
-import com.g2.taxinowbe.models.Rides;
-import com.g2.taxinowbe.notifier.Notifier;
-import com.g2.taxinowbe.security.jwt.JWTTokenNeeded;
-import com.g2.taxinowbe.utils.Utils;
-import com.google.api.client.util.DateTime;
+import com.g2.taxinow.models.Ride;
+import com.g2.taxinow.models.RideState;
+import com.g2.taxinow.models.Rides;
+import com.g2.taxinow.notifier.Notifier;
+import com.g2.taxinow.notifier.RideNotification;
+import com.g2.taxinow.security.jwt.JWTTokenNeeded;
+import com.g2.taxinow.utils.Utils;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
@@ -401,7 +401,7 @@ public class RidesResource {
     @JWTTokenNeeded
     @Path("/{ID}/accept")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response acceptRide(@QueryParam("price") String price, @Context ContainerRequestContext context, @PathParam("ID") String ID) throws ExecutionException, InterruptedException, NullPointerException {
+    public Response acceptRide(@QueryParam("price") String price, @Context ContainerRequestContext context, @PathParam("ID") String ID) throws ExecutionException, InterruptedException, NullPointerException, IOException {
         DocumentReference docRef = FirestoreClient.getFirestore().collection("rides").document(ID);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
@@ -421,6 +421,7 @@ public class RidesResource {
                     ride.setAccepted(userID, Float.parseFloat(price));
                     ApiFuture<WriteResult> future_write = docRef.set(ride);
                     response = Response.ok().entity(ride).build();
+                    Notifier.notifyRide(new RideNotification(RideNotification.Type.EDITED, ride));
                 } else {
                     response = Response.status(Response.Status.METHOD_NOT_ALLOWED).build();
                 }
@@ -444,7 +445,7 @@ public class RidesResource {
     @JWTTokenNeeded
     @Path("/{ID}/delete")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response deleteRide(@Context ContainerRequestContext context, @PathParam("ID") String ID) throws ExecutionException, InterruptedException, NullPointerException {
+    public Response deleteRide(@Context ContainerRequestContext context, @PathParam("ID") String ID) throws ExecutionException, InterruptedException, NullPointerException, IOException {
         DocumentReference docRef = FirestoreClient.getFirestore().collection("rides").document(ID);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
@@ -462,6 +463,7 @@ public class RidesResource {
                 if (ride.getState() == RideState.PENDING) {
                     ApiFuture<WriteResult> writeResult = docRef.delete();
                     response = Response.ok().entity(ride).build();
+                    Notifier.notifyRide(new RideNotification(RideNotification.Type.DELETED, ride));
                 } else {
                     response = Response.status(Response.Status.METHOD_NOT_ALLOWED).build();
                 }
@@ -485,7 +487,7 @@ public class RidesResource {
     @JWTTokenNeeded
     @Path("/{ID}/complete")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response completeRide(@Context ContainerRequestContext context, @PathParam("ID") String ID) throws ExecutionException, InterruptedException, NullPointerException {
+    public Response completeRide(@Context ContainerRequestContext context, @PathParam("ID") String ID) throws ExecutionException, InterruptedException, NullPointerException, IOException {
         DocumentReference docRef = FirestoreClient.getFirestore().collection("rides").document(ID);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
@@ -503,6 +505,7 @@ public class RidesResource {
                 ride.setCompleted();
                 ApiFuture<WriteResult> future_write = docRef.set(ride);
                 response = Response.ok().entity(ride).build();
+                Notifier.notifyRide(new RideNotification(RideNotification.Type.EDITED, ride));
             } else {
                 response = Response.status(Response.Status.UNAUTHORIZED).build();
             }
@@ -535,7 +538,7 @@ public class RidesResource {
             ride.setCreatedOn(Timestamp.valueOf(LocalDateTime.now()).getTime());
             ApiFuture<DocumentReference> future = FirestoreClient.getFirestore().collection("rides").add(Utils.removeNullValues(ride));
             String rideID = future.get().get().get().getId();
-            Notifier.notifyNewRide(ride.getNumOfPassengers());
+            Notifier.notifyRide(new RideNotification(RideNotification.Type.NEW, ride));
             return Response.status(Response.Status.CREATED).entity(rideID).build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED).build();

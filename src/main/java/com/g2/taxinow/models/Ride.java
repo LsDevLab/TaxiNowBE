@@ -1,14 +1,18 @@
-package com.g2.taxinowbe.models;
+package com.g2.taxinow.models;
 
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
+import java.io.Serializable;
 
 
 /**
  * Class representing a taxi ride.
  */
 @XmlRootElement(name = "ride")
-public class Ride {
+public class Ride implements Serializable {
+
+    private static final long serialVersionUID = 1329689096267457395L;
 
     /**
      * ID of the ride

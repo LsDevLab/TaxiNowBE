@@ -1,12 +1,9 @@
-package com.g2.taxinowbe;
+package com.g2.taxinow;
 
-import com.g2.taxinowbe.exceptions.UserNotExistsException;
-import com.g2.taxinowbe.exceptions.WrongPasswordException;
-import com.g2.taxinowbe.models.Customer;
-import com.g2.taxinowbe.models.Driver;
-import com.g2.taxinowbe.models.UserBody;
-import com.g2.taxinowbe.security.jwt.JWTTokenNeeded;
-import com.g2.taxinowbe.utils.Utils;
+import com.g2.taxinow.exceptions.UserNotExistsException;
+import com.g2.taxinow.exceptions.WrongPasswordException;
+import com.g2.taxinow.models.UserBody;
+import com.g2.taxinow.security.jwt.JWTTokenNeeded;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
@@ -15,11 +12,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
-import org.checkerframework.checker.units.qual.C;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

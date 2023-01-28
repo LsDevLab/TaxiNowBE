@@ -1,29 +1,17 @@
-package com.g2.taxinowbe;
+package com.g2.taxinow;
 
-import com.g2.taxinowbe.models.Driver;
-import com.g2.taxinowbe.notifier.Notifier;
-import com.google.api.core.ApiFuture;
+import com.g2.taxinow.notifier.Notifier;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.cloud.FirestoreClient;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.Key;
 import java.util.Base64;
-import java.util.concurrent.ExecutionException;
-
-import static jakarta.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
 
 @ApplicationPath("/taxinow-api")
 public class TaxiNowService extends Application {

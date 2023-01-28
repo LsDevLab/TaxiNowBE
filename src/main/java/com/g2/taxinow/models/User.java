@@ -1,4 +1,4 @@
-package com.g2.taxinowbe.models;
+package com.g2.taxinow.models;
 
 import jakarta.xml.bind.annotation.XmlElement;
 

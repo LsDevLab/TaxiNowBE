@@ -1,13 +1,10 @@
-package com.g2.taxinowbe.security.jwt;
+package com.g2.taxinow.security.jwt;
 
-import com.g2.taxinowbe.TaxiNowService;
+import com.g2.taxinow.TaxiNowService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.Priority;
-import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
@@ -16,11 +13,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 
 //import javax.crypto.KeyGenerator;
-import javax.crypto.KeyGenerator;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
-import java.security.Key;
-import java.util.Base64;
 
 @Provider
 @JWTTokenNeeded

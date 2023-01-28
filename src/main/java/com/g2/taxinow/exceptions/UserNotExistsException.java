@@ -1,4 +1,4 @@
-package com.g2.taxinowbe.exceptions;
+package com.g2.taxinow.exceptions;
 
 public class UserNotExistsException extends Exception{
 

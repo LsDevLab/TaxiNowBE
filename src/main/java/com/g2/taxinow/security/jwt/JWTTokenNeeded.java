@@ -1,4 +1,4 @@
-package com.g2.taxinowbe.security.jwt;
+package com.g2.taxinow.security.jwt;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

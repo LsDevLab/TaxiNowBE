@@ -1,4 +1,4 @@
-package com.g2.taxinowbe.utils;
+package com.g2.taxinow.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
