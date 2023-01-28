@@ -1,9 +1,12 @@
 package com.g2.taxinowbe;
 
 import com.g2.taxinowbe.models.Driver;
+import com.g2.taxinowbe.security.jwt.JWTTokenNeeded;
+import com.g2.taxinowbe.utils.Utils;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.SetOptions;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import jakarta.ws.rs.*;
@@ -42,17 +45,20 @@ public class DriversResource {
 
 
     @PUT
+    @JWTTokenNeeded
     @Path("/")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response editDriver(@Context ContainerRequestContext context, Driver driver) throws ExecutionException, InterruptedException {
         String id = driver.getID();
         DocumentReference docRef = FirestoreClient.getFirestore()
                 .collection("drivers").document(id);
-        if (context.getProperty("userID").equals(driver.getID())){
+        if (context.getProperty("userID").equals(id)){
             // asynchronously retrieve the document
-            ApiFuture<WriteResult> future = docRef.set(driver);
+            driver.setID(null);
+            ApiFuture<WriteResult> future = docRef.set(Utils.removeNullValues(driver), SetOptions.merge());
             // block on response
             WriteResult document = future.get();
+            driver.setID(id);
             return Response.ok().entity(driver).build();
         }else {
             return Response.status(Response.Status.UNAUTHORIZED).build();

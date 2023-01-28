@@ -46,6 +46,7 @@ public class JWTTokenNeededFilter implements ContainerRequestFilter {
             requestContext.setProperty("username", claims.getBody().getSubject());
             requestContext.setProperty("userID", claims.getBody().get("userID"));
             requestContext.setProperty("userType", claims.getBody().get("userType"));
+            requestContext.setProperty("numOfSeats", claims.getBody().get("numOfSeats"));
         } catch (Exception e) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }

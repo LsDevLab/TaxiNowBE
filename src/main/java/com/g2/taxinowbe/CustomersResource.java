@@ -3,9 +3,11 @@ package com.g2.taxinowbe;
 import com.g2.taxinowbe.models.Customer;
 import com.g2.taxinowbe.models.Driver;
 import com.g2.taxinowbe.security.jwt.JWTTokenNeeded;
+import com.g2.taxinowbe.utils.Utils;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.SetOptions;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
 import io.jsonwebtoken.Jwts;
@@ -60,17 +62,20 @@ public class CustomersResource {
     }
 
     @PUT
+    @JWTTokenNeeded
     @Path("/")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response editCustomer(@Context ContainerRequestContext context, Customer customer) throws ExecutionException, InterruptedException {
         String id = customer.getID();
         DocumentReference docRef = FirestoreClient.getFirestore()
-                .collection("customer").document(id);
-        if (context.getProperty("userID").equals(customer.getID())){
+                .collection("customers").document(id);
+        if (context.getProperty("userID").equals(id)){
+            customer.setID(null);
             // asynchronously retrieve the document
-            ApiFuture<WriteResult> future = docRef.set(customer);
+            ApiFuture<WriteResult> future = docRef.set(Utils.removeNullValues(customer), SetOptions.merge());
             // block on response
             WriteResult document = future.get();
+            customer.setID(id);
             return Response.ok().entity(customer).build();
         }else {
             return Response.status(Response.Status.UNAUTHORIZED).build();

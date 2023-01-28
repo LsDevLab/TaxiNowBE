@@ -105,6 +105,7 @@ public class AccessResource {
         String hashedPassword;
         String userID;
         String userType;
+        int numOfSeats = 0;
         // retrieve the user of Firebase db
         ApiFuture<QuerySnapshot> future = FirestoreClient.getFirestore().collection("customers").whereEqualTo("username", username).get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
@@ -121,6 +122,7 @@ public class AccessResource {
                 hashedPassword = (String) document.getData().get("hashedPassword");
                 userID = document.getId();
                 userType = "driver";
+                numOfSeats = ((Double)document.getData().get("numOfSeats")).intValue();
             } else {
                 throw new UserNotExistsException();
             }
@@ -138,6 +140,7 @@ public class AccessResource {
                 .setExpiration(Date.from(Instant.now().plus(360l, ChronoUnit.MINUTES)))
                 .claim("userType", userType)
                 .claim("userID", userID)
+                .claim("numOfSeats", numOfSeats)
                 .signWith(TaxiNowService.SIGNATURE_ALGORITHM, TaxiNowService.API_KEY)
                 .compact();
         return jwtToken;
