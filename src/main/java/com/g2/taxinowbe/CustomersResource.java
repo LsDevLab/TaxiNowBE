@@ -62,10 +62,10 @@ public class CustomersResource {
     @PUT
     @Path("/")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response editDriver(@Context ContainerRequestContext context, Customer customer) throws ExecutionException, InterruptedException {
+    public Response editCustomer(@Context ContainerRequestContext context, Customer customer) throws ExecutionException, InterruptedException {
         String id = customer.getID();
         DocumentReference docRef = FirestoreClient.getFirestore()
-                .collection("drivers").document(id);
+                .collection("customer").document(id);
         if (context.getProperty("userID").equals(customer.getID())){
             // asynchronously retrieve the document
             ApiFuture<WriteResult> future = docRef.set(customer);
