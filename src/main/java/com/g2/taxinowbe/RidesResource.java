@@ -440,11 +440,11 @@ public class RidesResource {
      * @param ID ID of the ride
      * @return The information about the pending ride
      */
-    @PUT
+    @DELETE
     @JWTTokenNeeded
-    @Path("/{ID}/discard")
+    @Path("/{ID}/delete")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response discardRide(@Context ContainerRequestContext context, @PathParam("ID") String ID) throws ExecutionException, InterruptedException, NullPointerException {
+    public Response deleteRide(@Context ContainerRequestContext context, @PathParam("ID") String ID) throws ExecutionException, InterruptedException, NullPointerException {
         DocumentReference docRef = FirestoreClient.getFirestore().collection("rides").document(ID);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         // block on response
@@ -458,10 +458,9 @@ public class RidesResource {
             String userID = (String) context.getProperty("userID");
             // return ride only if you are the customer of the driver
             assert ride != null;
-            if (userType.compareToIgnoreCase("driver") == 0 && userID.compareTo(ride.getAcceptedByDriverID()) == 0) {
-                if (ride.getState() != RideState.COMPLETED) {
-                    ride.setPending();
-                    ApiFuture<WriteResult> future_write = docRef.set(ride);
+            if (userType.compareToIgnoreCase("customer") == 0 && userID.compareTo(ride.getCustomerID()) == 0) {
+                if (ride.getState() == RideState.PENDING) {
+                    ApiFuture<WriteResult> writeResult = docRef.delete();
                     response = Response.ok().entity(ride).build();
                 } else {
                     response = Response.status(Response.Status.METHOD_NOT_ALLOWED).build();
