@@ -54,7 +54,8 @@ public class RidesResource {
             query = collectionReference.whereEqualTo("acceptedByDriverID", userID);
             query2 = collectionReference.whereEqualTo("state", RideState.PENDING);
             Integer maxNumOfPassengers = (Integer) context.getProperty("numOfSeats");
-            query2 = query2.whereLessThanOrEqualTo("numOfPassengers", maxNumOfPassengers);
+            if(maxNumOfPassengers != null)
+                query2 = query2.whereLessThanOrEqualTo("numOfPassengers", maxNumOfPassengers);
         }else{
             //CASE - I'm not authorized
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -110,6 +111,8 @@ public class RidesResource {
         }else if(userType.compareToIgnoreCase("driver")==0){
             //CASE - I'm a driver
             Integer maxNumOfPassengers = (Integer) context.getProperty("numOfSeats");
+            if(maxNumOfPassengers != null)
+                maxNumOfPassengers = 10;
             query = collectionReference.whereLessThanOrEqualTo("numOfPassengers", maxNumOfPassengers);
             //query = query.orderBy("createdOn", Query.Direction.DESCENDING);
         }else{
