@@ -21,6 +21,10 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
+
+/**
+ * The resource which provides rides related endpoints
+ */
 @Path("/rides")
 public class RidesResource {
 
@@ -548,27 +552,4 @@ public class RidesResource {
         }
     }
 
-    /*@PUT
-    @JWTTokenNeeded
-    @Path("/")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response editRide(@Context ContainerRequestContext context, Ride ride) throws ExecutionException, InterruptedException, NullPointerException {
-        DocumentReference docRef = FirestoreClient.getFirestore().collection("rides").document(ride.getID());
-        ApiFuture<DocumentSnapshot> future = docRef.get();
-        // block on response
-        DocumentSnapshot document = future.get();
-        Response response = null;
-        if (document.exists()) {
-            // convert document to POJO
-            Ride ride = document.toObject(Ride.class);
-            ride.setID(document.getId());
-            ApiFuture<WriteResult> future_write = docRef.set(ride);
-            // block on response
-             return Response.ok().entity(ride).build();
-        } else if (ride.getDestinationAddress() == null || ride.getStartingAddress() == null || ride.getNumOfPassengers() == 0){
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        } else {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        }
-    }*/
 }

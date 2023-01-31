@@ -15,6 +15,11 @@ import jakarta.ws.rs.ext.Provider;
 //import javax.crypto.KeyGenerator;
 import java.io.IOException;
 
+/**
+ * A filter executed on each requests on endpoints marked with the annotation @JWTTokenNeeded.
+ * It checks the authorization JWT token in the requests, allows/blocks requests and set the context
+ * for the requests incoming to the backend API.
+ */
 @Provider
 @JWTTokenNeeded
 @Priority(Priorities.AUTHENTICATION)
@@ -36,11 +41,15 @@ public class JWTTokenNeededFilter implements ContainerRequestFilter {
             if(!claims.getBody().containsKey("userID") || !claims.getBody().containsKey("userType")){
                 throw new Exception();
             }
+
+            // setting the context properties (to be used in requests)
             requestContext.setProperty("username", claims.getBody().getSubject());
             requestContext.setProperty("userID", claims.getBody().get("userID"));
             requestContext.setProperty("userType", claims.getBody().get("userType"));
             requestContext.setProperty("numOfSeats", claims.getBody().get("numOfSeats"));
+
         } catch (Exception e) {
+            // if exception occur returns an UNAUTHORIZED response rejecting the request0
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
 

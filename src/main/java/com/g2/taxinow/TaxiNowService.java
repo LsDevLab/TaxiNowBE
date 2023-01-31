@@ -13,15 +13,37 @@ import java.io.*;
 import java.security.Key;
 import java.util.Base64;
 
+/**
+ * The overall REST service
+ */
 @ApplicationPath("/taxinow-api")
 public class TaxiNowService extends Application {
 
+    /**
+     * The API_KEY associated to the service, used to autorize requests and issue JWT tokens
+     */
     public static Key API_KEY;
+
+    /**
+     * The used signature algorithm
+     */
     public static SignatureAlgorithm SIGNATURE_ALGORITHM;
 
+    /**
+     * The address on which the notifier server will be opened
+     */
     public static String MULTICAST_NOTIFIER_ADDRESS = "230.0.0.0";
+
+    /**
+     * The port on which the notifier server will be opened
+     */
     public static int MULTICAST_NOTIFIER_PORT = 7778;
 
+    /**
+     * Initializes the service
+     *
+     * @throws IOException
+     */
     public TaxiNowService() throws IOException {
         // Initialize Firebase Database
         FileInputStream serviceAccount = new FileInputStream("serviceAccountKey.json");
@@ -33,7 +55,7 @@ public class TaxiNowService extends Application {
         String keyString = new BufferedReader(new FileReader("apiSecret.txt")).readLine();
         SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
         API_KEY = new SecretKeySpec(Base64.getDecoder().decode(keyString), SIGNATURE_ALGORITHM.getJcaName());
-        // notifier init
+        // Initialize Notifier
         Notifier.initialize(MULTICAST_NOTIFIER_ADDRESS, MULTICAST_NOTIFIER_PORT);
     }
 

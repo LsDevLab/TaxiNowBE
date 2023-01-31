@@ -18,6 +18,9 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+/**
+ * The resource which provides customer related endpoints
+ */
 @Path("/customers")
 public class CustomersResource {
 
@@ -52,6 +55,15 @@ public class CustomersResource {
         }
     }
 
+    /**
+     * Edit a given user
+     *
+     * @param context the context for the request
+     * @param customer the edited user
+     * @return the edited user
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @PUT
     @JWTTokenNeeded
     @Path("/")

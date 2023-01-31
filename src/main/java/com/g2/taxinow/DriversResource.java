@@ -18,14 +18,25 @@ import jakarta.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-
+/**
+ * The resource which provides driver related endpoints
+ */
 @Path("/drivers")
 public class DriversResource {
 
+    /**
+     * Get the user with the specified ID
+     *
+     * @param id the id of the user to return
+     * @return the user
+     * @throws ExecutionException
+     * @throws InterruptedException
+     * @throws IOException
+     */
     @GET
     @Path("/{ID}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Response getDriver(@PathParam("ID") String id) throws ExecutionException, InterruptedException, IOException {
+    public Response getDriver(@PathParam("ID") String id) throws ExecutionException, InterruptedException {
         DocumentReference docRef = FirestoreClient.getFirestore()
                 .collection("drivers").document(id);
         // asynchronously retrieve the document
@@ -43,7 +54,15 @@ public class DriversResource {
         }
     }
 
-
+    /**
+     * Edit a user
+     *
+     * @param context the context for the request
+     * @param driver the edited driver
+     * @return the edited driver
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @PUT
     @JWTTokenNeeded
     @Path("/")

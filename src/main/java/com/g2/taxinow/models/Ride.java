@@ -12,6 +12,7 @@ import java.io.Serializable;
 @XmlRootElement(name = "ride")
 public class Ride implements Serializable {
 
+    // field used for correct serialization between two different applications
     private static final long serialVersionUID = 1329689096267457395L;
 
     /**

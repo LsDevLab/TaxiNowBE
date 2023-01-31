@@ -2,6 +2,9 @@ package com.g2.taxinow.models;
 
 import jakarta.xml.bind.annotation.XmlElement;
 
+/**
+ * A class representing a user (to be extent by Customer and Driver classes)
+ */
 public abstract class User {
 
     /**

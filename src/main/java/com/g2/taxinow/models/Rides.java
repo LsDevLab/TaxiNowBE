@@ -39,4 +39,5 @@ public class Rides {
         str += '}';
         return str;
     }
+
 }

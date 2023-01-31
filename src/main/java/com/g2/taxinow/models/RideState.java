@@ -1,7 +1,7 @@
 package com.g2.taxinow.models;
 
 /**
- * Possible states for a ride
+ * Enumeration representing all possible states for a ride
  */
 public enum RideState {
     PENDING,

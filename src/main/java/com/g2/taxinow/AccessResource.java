@@ -24,9 +24,15 @@ import static jakarta.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
 import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
 
+/**
+ * The resource which provides access endpoints
+ */
 @Path("/access")
 public class AccessResource {
 
+    /**
+     * @return "TaxiNOW BE is alive!" if the service is running and reachable
+     */
     @GET
     @Path("/alive")
     @Produces("text/plain")
@@ -34,6 +40,10 @@ public class AccessResource {
         return "TaxiNOW BE is alive!";
     }
 
+    /**
+     * @param context the request context
+     * @return a check string if the request is authenticated
+     */
     @GET
     @JWTTokenNeeded
     @Path("/login")
@@ -43,6 +53,13 @@ public class AccessResource {
                 " and your ID is " + context.getProperty("userID") + ".";
     }
 
+    /**
+     * Login to the service
+     *
+     * @param username the username of the user
+     * @param hashedPassword the hash of the password of the user
+     * @return the JWT token if the user exists and the hashedPassword is correct
+     */
     @POST
     @Path("/login")
     @Consumes(APPLICATION_FORM_URLENCODED)
@@ -59,6 +76,18 @@ public class AccessResource {
         }
     }
 
+    /**
+     * Register a new user
+     *
+     * @param username the username
+     * @param hashedPassword the hash of the password
+     * @param name the name of the user
+     * @param surname the surname of the user
+     * @param userType the user type ("customer" or "driver")
+     * @return the JWT token
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @POST
     @Path("/register")
     @Consumes(APPLICATION_FORM_URLENCODED)
@@ -66,11 +95,12 @@ public class AccessResource {
                              @FormParam("hashedPassword") String hashedPassword,
                              @FormParam("name") String name,
                              @FormParam("surname") String surname,
-                             @FormParam("userType") String userType) throws ExecutionException, InterruptedException, NoSuchAlgorithmException {
+                             @FormParam("userType") String userType) throws ExecutionException, InterruptedException {
         if (userExists(username)){
             return Response.status(Response.Status.CONFLICT).build();
         } else if(userType.equals("customer") || userType.equals("driver")){
             String userID = createUser(userType+"s", username, hashedPassword, name, surname);
+            // build JWT token
             String jwtToken = Jwts.builder()
                     .setSubject(username)
                     .setIssuer("TaxiNOW")
@@ -99,7 +129,7 @@ public class AccessResource {
         String userID;
         String userType;
         int numOfSeats = 0;
-        // retrieve the user of Firebase db
+        // retrieve the user from Firebase db
         ApiFuture<QuerySnapshot> future = FirestoreClient.getFirestore().collection("customers").whereEqualTo("username", username).get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
         if (!documents.isEmpty()) {
@@ -144,7 +174,7 @@ public class AccessResource {
      * @throws InterruptedException
      */
     private boolean userExists(String username) throws ExecutionException, InterruptedException {
-        // retrieve the user of Firebase db
+        // retrieve the user from Firebase db
         ApiFuture<AggregateQuerySnapshot> future = FirestoreClient.getFirestore()
                 .collection("customers")
                 .whereEqualTo("username", username)
@@ -163,6 +193,7 @@ public class AccessResource {
     }
 
     /**
+     * Create a new user of Firestore DB
      *
      * @param userType type of the user ("customer" or "driver")
      * @param username username of the user

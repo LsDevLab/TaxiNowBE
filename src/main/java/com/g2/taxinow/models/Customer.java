@@ -42,4 +42,5 @@ public class Customer extends User{
     public String toString() {
         return "Customer " + getID() + ": " + getName() + " " + getSurname() + ", " + getEmail() + ", " + getPhoneNumber();
     }
+
 }
